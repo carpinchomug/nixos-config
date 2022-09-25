@@ -1,0 +1,3 @@
+alias open find-file $1
+alias ll ls -l $*
+alias quickpy nix flake init --template github:carpinchomug/flake-templates#quickpython
