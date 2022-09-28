@@ -43,8 +43,8 @@
     # '';
   };
 
-  home.file = {
-    ".config/emacs/init.el" = { source = ./init.el; };
-    ".config/emacs/eshell/alias" = { source = ./alias; };
+  xdg.configFile = {
+    "emacs/init.el".source = ./init.el;
+    "emacs/eshell/alias".source = ./alias;
   };
 }
