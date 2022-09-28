@@ -130,7 +130,7 @@ in
         }
         {
           command = ''
-            kmonad ~/.config/config.kbd
+            kmonad ~/.config/kmonad/config.kbd
           '';
         }
       ];
