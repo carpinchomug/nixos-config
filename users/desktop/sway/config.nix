@@ -32,8 +32,8 @@ in
       # output.eDP-1 = { bg = "${wallpapers.serenity} fill"; };
       # output."*" = { bg = "${wallpapers.serenity} fill"; };
       output = {
-        eDP-1 = { bg = "${wallpapers.landscape} fill"; };
-        HDMI-A-1 = { bg = "${wallpapers.landscape} fill"; };
+        eDP-1 = { bg = "${wallpapers.kiwi} fill"; };
+        HDMI-A-1 = { bg = "${wallpapers.kiwi} fill"; };
       };
 
       workspaceOutputAssign = [
