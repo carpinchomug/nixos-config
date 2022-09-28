@@ -94,14 +94,18 @@
 ;; (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
 
 
-(use-package doom-themes
-  :config
-  (load-theme 'doom-solarized-light t))
+;; (use-package doom-themes
+;;   :config
+;;   (load-theme 'doom-solarized-light t))
 
 
-(use-package doom-modeline
+;; (use-package doom-modeline
+;;   :config
+;;   (doom-modeline-mode))
+
+(use-package monokai-theme
   :config
-  (doom-modeline-mode))
+  (load-theme 'monokai t))
 
 
 (use-package which-key

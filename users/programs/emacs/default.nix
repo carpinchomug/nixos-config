@@ -36,6 +36,7 @@
       # ui
       doom-themes
       doom-modeline
+      monokai-theme
     ];
 
     # extraConfig = ''
