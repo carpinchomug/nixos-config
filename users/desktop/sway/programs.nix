@@ -5,7 +5,6 @@
     brightnessctl
     grim
     imv
-    mako
     slurp
     swaylock
     swayidle
@@ -18,6 +17,11 @@
     pavucontrol
     pamixer
   ];
+
+  programs.mako = {
+    enable = true;
+    defaultTimeout = 10;
+  };
 
   wayland.windowManager.sway.extraSessionCommands = ''
     if [[ ! -d ~/Pictures/Screenshots ]]; then
