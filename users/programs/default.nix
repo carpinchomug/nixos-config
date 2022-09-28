@@ -105,4 +105,6 @@ in
     enable = true;
     nix-direnv.enable = true;
   };
+
+  xdg.configFile."kmonad/config.kbd".source = ./config.kbd;
 }
