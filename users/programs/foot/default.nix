@@ -28,7 +28,7 @@ in
         hide-when-typing = "yes";
       };
 
-      colors = themes.monokai// { alpha = 1.0; };
+      colors = themes.solarized-light// { alpha = 1.0; };
     };
   };
 }
