@@ -51,38 +51,38 @@ let
   #   '';
   # };
 
-  # fluent-theme = pkgs.stdenv.mkDerivation rec {
-  #   pname = "fluent-gtk-theme";
-  #   version = "2022-06-15";
-  #
-  #   src = pkgs.fetchFromGitHub {
-  #     owner = "vinceliuice";
-  #     repo = "Fluent-gtk-theme";
-  #     rev = "94f164cd2ee6b573bd03e1a7b03c2e0645780208";
-  #     sha256 = "sha256-7qTfg9N/41q0/7zUl0zNKCayFh2opIsiPJmB3z5N02Y=";
-  #   };
-  #
-  #   buildInputs = with pkgs; [
-  #     gtk3
-  #     gnome.gnome-themes-extra # adwaita engine for Gtk2
-  #     sassc
-  #   ];
-  #
-  #   propagatedUserEnvPkgs = with pkgs; [
-  #     gtk-engine-murrine # murrine engine for Gtk2
-  #   ];
-  #
-  #   postPatch = ''
-  #     patchShebangs install.sh
-  #   '';
-  #
-  #   installPhase = ''
-  #     runHook preInstall
-  #     mkdir -p $out/share/themes
-  #     unset name && ./install.sh -d $out/share/themes
-  #     runHook postInstall
-  #   '';
-  # };
+  fluent-theme = pkgs.stdenv.mkDerivation rec {
+    pname = "fluent-gtk-theme";
+    version = "2022-06-15";
+ 
+    src = pkgs.fetchFromGitHub {
+      owner = "vinceliuice";
+      repo = "Fluent-gtk-theme";
+      rev = "94f164cd2ee6b573bd03e1a7b03c2e0645780208";
+      sha256 = "sha256-7qTfg9N/41q0/7zUl0zNKCayFh2opIsiPJmB3z5N02Y=";
+    };
+ 
+    buildInputs = with pkgs; [
+      gtk3
+      gnome.gnome-themes-extra # adwaita engine for Gtk2
+      sassc
+    ];
+ 
+    propagatedUserEnvPkgs = with pkgs; [
+      gtk-engine-murrine # murrine engine for Gtk2
+    ];
+ 
+    postPatch = ''
+      patchShebangs install.sh
+    '';
+ 
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/themes
+      unset name && ./install.sh -d $out/share/themes
+      runHook postInstall
+    '';
+  };
 
 in
 {
@@ -96,13 +96,13 @@ in
     };
 
     iconTheme = {
-      package = pkgs.tela-icon-theme;
-      name = "Tela-dark";
+      package = pkgs.fluent-icon-theme;
+      name = "Fluent-icon";
     };
 
     theme = {
-      package = pkgs.pop-gtk-theme;
-      name = "Pop";
+      package = fluent-theme;
+      name = "Fluent";
     };
 
     # gtk3.extraConfig = {
