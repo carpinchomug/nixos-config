@@ -1,6 +1,6 @@
 {
   programs.helix.settings = {
-    theme = "monokai";
+    theme = "solarized_light";
 
     editor = {
       line-number = "relative";
