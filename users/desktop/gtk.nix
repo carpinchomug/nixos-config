@@ -97,7 +97,7 @@ in
 
     iconTheme = {
       package = pkgs.fluent-icon-theme;
-      name = "Fluent-icon";
+      name = "Fluent";
     };
 
     theme = {
