@@ -20,7 +20,7 @@
 
 ;; Set fonts
 (add-to-list 'default-frame-alist
-             '(font . "FiraCode Nerd Font-13"))
+	     '(font . "FiraCode Nerd Font-13"))
 
 
 ;; Scroll line by line
@@ -48,7 +48,7 @@
 
 
 ;; Activate eshell on startup
-(add-hook 'emacs-startup-hook (lambda () (eshell)))
+;; (add-hook 'emacs-startup-hook (lambda () (eshell)))
 
 
 ;; Run `M-x recentf-open-files` to open recent files
@@ -83,7 +83,7 @@
 
 
 ;; Remember the last visited place in a file
-; (save-place-mode)
+;; (save-place-mode)
 
 
 ;; Revert buffers when the underlying file has changed
@@ -116,11 +116,6 @@
   (pdf-tools-install))
 
 
-;; (use-package company
-;;   :config
-;;   (global-company-mode))
-
-
 ;; Direnv
 (use-package direnv
   :config
@@ -131,7 +126,6 @@
 ;; Turn of viaual line mode in org mode
 (use-package org
   :hook ((org-mode . visual-line-mode)
-	 (org-mode . (lambda () (display-line-numbers-mode -1)))
 	 (org-mode . (lambda () (electric-pair-local-mode -1))))
   :config
   (org-babel-do-load-languages
@@ -150,10 +144,10 @@
   (setq org-babel-default-header-args:jupyter-python '((:session . "py")
 						       (:kernel . "python3")))
   (setq org-babel-default-header-args:jupyter-julia '((:session . "jl")
-						      (:kernel . "julia-1.7")))
+						      (:kernel . "julia-1.8")))
 
   (require 'org-tempo)
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'orgd-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python"))
   (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
@@ -178,15 +172,6 @@
 
 
 ;; Rust mode
-;; (use-package rust-mode
-;;   :hook (rust-mode . display-line-numbers-mode)
-;;   :config
-;;   (display-line-numbers-mode)
-;;   (add-hook 'rust-mode-hook
-;; 	    (lambda () (setq indent-tabs-mode nil)))
-;;   (setq rust-format-on-save t)
-;;   (add-hook 'rust-mode-hook
-;; 	    (lambda () (prettify-symbols-mode))))
 (use-package rustic
   :hook (rustic-mode . display-line-numbers-mode)
   :config
