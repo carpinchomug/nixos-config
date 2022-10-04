@@ -33,6 +33,7 @@ in
     inkscape
     blender
     freecad
+    libsForQt5.kdenlive
     kmonad-static
 
 
