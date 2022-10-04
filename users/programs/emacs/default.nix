@@ -32,10 +32,6 @@
       marginalia
       embark
       embark-consult
-
-      # ui
-      doom-themes
-      doom-modeline
     ];
 
     # extraConfig = ''
