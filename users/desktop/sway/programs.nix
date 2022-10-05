@@ -11,6 +11,7 @@
     wofi
     wl-clipboard
     wlogout
+    swaybg
 
     # audio stuff
     pulseaudio
