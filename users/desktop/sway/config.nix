@@ -14,7 +14,21 @@ in
       modifier = "Mod4";
       terminal = "foot";
       menu = "wofi --show run | xargs swaymsg exec --";
-      bars = [{ command = "waybar"; }];
+      bars = [
+        {
+          position = "top";
+          fonts = {
+            names = [ "Noto Sans" "Noto Sans CJK JP" "NotoSans Nerd Font" ];
+            size = 12.0;
+          };
+          statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
+          extraConfig = ''
+            tray {
+              icon_theme Papirus-Dark
+            }
+          '';
+        }
+      ];
 
       input = {
         "type:keyboard" = {
