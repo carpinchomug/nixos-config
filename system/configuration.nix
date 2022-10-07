@@ -59,7 +59,6 @@
 
     networkmanager.enable = true;
   };
-  programs.nm-applet.enable = true;
 
   sound.enable = true;
 
