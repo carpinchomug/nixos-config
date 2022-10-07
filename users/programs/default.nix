@@ -35,6 +35,7 @@ in
     freecad
     libsForQt5.kdenlive
     kmonad-static
+    networkmanagerapplet
 
 
     # Bash
