@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./fcitx5.nix ];
-
   services.gnome-keyring.enable = true;
 
   # enable udisks2 system-wide for this
