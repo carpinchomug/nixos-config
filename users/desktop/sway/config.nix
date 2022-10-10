@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  wallpapers = import ../wallpapers;
+  wallpaper = builtins.toString config.xdg.configHome + "/wallpapers/kiwi.jpg";
 
 in
 {
@@ -44,8 +44,8 @@ in
       };
 
       output = {
-        eDP-1 = { bg = "${wallpapers.kiwi} fill"; };
-        HDMI-A-1 = { bg = "${wallpapers.kiwi} fill"; };
+        eDP-1.bg = "${wallpaper} fill";
+        HDMI-A-1.bg = "${wallpaper} fill";
       };
 
       workspaceOutputAssign = [
