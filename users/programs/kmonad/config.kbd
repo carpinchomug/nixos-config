@@ -32,7 +32,7 @@
 )
 
 (defalias
-  ctl_esc (tap-hold-next-release 200 esc lctl)
+  ctl_esc (tap-hold-next-release 150 esc lctl)
 )
 
 ;; Zenakaku doesn't get recognised by fcitx 5 or maybe triggered at all.
