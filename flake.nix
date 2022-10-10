@@ -45,6 +45,8 @@
       devShell.${system} = pkgs.mkShell {
         buildInputs = with pkgs; [
           gnumake
+          just
+          pre-commit
         ];
       };
     };
