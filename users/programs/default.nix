@@ -91,7 +91,7 @@ in
     clippy
     rustfmt
     rust-analyzer
-    
+
     fluent-icon-theme
   ];
 

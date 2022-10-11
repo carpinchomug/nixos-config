@@ -147,7 +147,7 @@ in
         }
       ];
     };
-    
+
     extraSessionCommands = ''
       if [[ ! -d ~/Pictures/Screenshots ]]; then
         mkdir -p ~/Pictures/Screenshots
