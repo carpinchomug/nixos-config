@@ -49,5 +49,7 @@
           pre-commit
         ];
       };
+
+      formatter.${system} = pkgs.nixpkgs-fmt;
     };
 }
