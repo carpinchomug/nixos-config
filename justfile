@@ -1,29 +1,33 @@
 repo := "github:carpinchomug/nixos-config"
 
 
-alias sw := switch-local
+alias sl := switch-local
 alias hl := switch-home-local
 
 
 update:
 	nix flake update
 
+test: test-system test-home
 
-switch: (_switch repo "thinkpad")
+test-system:
+	nixos-rebuild test --flake .#thinkpad --use-remote-sudo
 
-switch-local: (_switch "." "thinkpad")
+test-home:
+	nix build .#homeConfigurations.akiyoshi.activationPackage --dry-run
 
+switch:
+	nixos-rebuild switch --flake {{repo}}#thinkpad --use-remote-sudo
 
-switch-home: (_switch-home repo "akiyoshi")
+switch-local:
+	nixos-rebuild switch --flake .#thinkpad --use-remote-sudo
 
-switch-home-local: (_switch-home "." "akiyoshi")
+switch-home:
+	nix build {{repo}}#homeConfigurations.akiyoshi.activationPackage
+	./result/activate
+	rm result
 
-
-_switch flake machine:
-	nixos-rebuild switch --flake {{flake}}#{{machine}} --use-remote-sudo
-
-
-_switch-home flake user:
-	nix build {{flake}}#homeConfigurations.{{user}}.activationPackage -o generation
-	./generation/activate
-	rm generation
+switch-home-local:
+	nix build .#homeConfigurations.akiyoshi.activationPackage
+	./result/activate
+	rm result

@@ -36,7 +36,7 @@ in
     libsForQt5.kdenlive
     kmonad-static
     networkmanagerapplet
-    
+
     gnumake
     just
     pre-commit
