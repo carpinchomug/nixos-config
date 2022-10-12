@@ -17,6 +17,8 @@
       # org-mode
       org
 
+      auctex
+
       # utilities
       corfu # completeion
       magit

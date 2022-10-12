@@ -449,3 +449,7 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+
+(use-package tex
+  :ensure auctex)
