@@ -115,4 +115,6 @@ in
   };
 
   xdg.configFile."kmonad/config.kbd".source = ./kmonad/config.kbd;
+
+  home.file.".latexmkrc".source = ./latexmkrc;
 }
