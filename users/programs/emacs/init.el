@@ -452,4 +452,8 @@
 
 
 (use-package tex
-  :ensure auctex)
+  :ensure auctex
+  :hook ((LaTeX-mode . LaTeX-math-mode)
+         (LaTeX-mode . TeX-fold-mode))
+  :init
+  (setq TeX-engine 'luatex))
