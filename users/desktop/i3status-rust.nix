@@ -14,7 +14,7 @@
           on_click = "nm-connection-editor";
           ap_format = "{strength}{ssid}";
           device_format = "{icon}{ap}";
-          connection_format = "";
+          connection_format = "{devices}";
         }
         {
           block = "battery";
