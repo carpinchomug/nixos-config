@@ -15,6 +15,10 @@
           ap_format = "{strength} {ssid}";
           device_format = "{icon}{ap}";
           connection_format = "{devices}";
+          interface_name_exclude = [
+            "br\\-[0-9a-f]{12}"
+            "docker\\d+"
+          ];
         }
         {
           block = "battery";
