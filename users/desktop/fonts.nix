@@ -5,6 +5,5 @@
 
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "Noto" ]; })
-    font-awesome
   ];
 }

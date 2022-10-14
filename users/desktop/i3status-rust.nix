@@ -3,7 +3,7 @@
     enable = true;
 
     bars.default = {
-      icons = "awesome6";
+      icons = "material-nf";
       blocks = [
         {
           block = "sound";
