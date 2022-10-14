@@ -8,6 +8,9 @@ alias hl := switch-home-local
 update:
 	nix flake update
 
+gc:
+	sudo nix-collect-garbage -d	
+
 test: test-system test-home
 
 test-system:
