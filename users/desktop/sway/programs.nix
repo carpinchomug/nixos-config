@@ -21,7 +21,7 @@
 
   programs.mako = {
     enable = true;
-    defaultTimeout = 10;
+    defaultTimeout = 20000; # specified in milliseconds
   };
 
   wayland.windowManager.sway.extraSessionCommands = ''
