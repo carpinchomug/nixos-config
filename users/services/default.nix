@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  services.gnome-keyring.enable = true;
+  services = {
+    gnome-keyring.enable = true;
+    udiskie.enable = true;
+  };
 }
