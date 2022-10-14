@@ -3,6 +3,9 @@
 {
   nix = {
     package = pkgs.nixUnstable;
+    settings = {
+      auto-optimise-store = true;
+    };
     extraOptions = ''
       # enable flakes
       experimental-features = nix-command flakes
