@@ -18,7 +18,7 @@ in
         {
           position = "top";
           fonts = {
-            names = [ "Noto Sans" "Noto Sans CJK JP" "NotoSans Nerd Font" ];
+            names = [ "Noto Sans" "Noto Sans CJK JP" "Font Awesome 6" ];
             size = 12.0;
           };
           statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";

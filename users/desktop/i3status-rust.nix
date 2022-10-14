@@ -3,7 +3,7 @@
     enable = true;
 
     bars.default = {
-      icons = "material-nf";
+      icons = "awesome6";
       blocks = [
         {
           block = "sound";
@@ -12,7 +12,7 @@
         {
           block = "networkmanager";
           on_click = "nm-connection-editor";
-          ap_format = "{strength}{ssid}";
+          ap_format = "{strength} {ssid}";
           device_format = "{icon}{ap}";
           connection_format = "{devices}";
         }
