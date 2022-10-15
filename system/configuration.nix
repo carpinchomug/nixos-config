@@ -90,8 +90,6 @@
     };
   };
 
-  services.blueman.enable = true;
-
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
