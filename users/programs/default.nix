@@ -35,7 +35,9 @@ in
     freecad
     libsForQt5.kdenlive
     kmonad-static
+
     networkmanagerapplet
+    blueman
 
     gnumake
     just

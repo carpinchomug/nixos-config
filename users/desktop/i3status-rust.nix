@@ -9,7 +9,7 @@
           block = "bluetooth";
           mac = "4C:1D:96:7A:C6:72";
           format = "{label} {percentage}";
-          format_unavailable = "{label} x";
+          format_unavailable = "{label}";
           on_click = "blueman-manager";
         }
         {
