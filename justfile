@@ -9,7 +9,7 @@ update:
 	nix flake update
 
 gc:
-	sudo nix-collect-garbage -d	
+	sudo nix-collect-garbage -d
 
 test: test-system test-home
 
