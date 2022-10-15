@@ -37,7 +37,6 @@ in
     kmonad-static
 
     networkmanagerapplet
-    blueman
 
     gnumake
     just

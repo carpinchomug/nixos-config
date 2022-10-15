@@ -6,13 +6,6 @@
       icons = "material-nf";
       blocks = [
         {
-          block = "bluetooth";
-          mac = "4C:1D:96:7A:C6:72";
-          format = "{label} {percentage}";
-          format_unavailable = "{label}";
-          on_click = "blueman-manager";
-        }
-        {
           block = "sound";
           on_click = "pavucontrol";
         }
