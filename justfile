@@ -10,6 +10,7 @@ update:
 
 gc:
 	sudo nix-collect-garbage -d
+	just sl
 
 test: test-system test-home
 
