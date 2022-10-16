@@ -21,7 +21,7 @@
 ;; Set fonts
 (add-to-list 'default-frame-alist
 	     '(font . "FiraCode Nerd Font-13"))
-
+(set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP")
 
 ;; Scroll line by line
 (setq scroll-step 1)
