@@ -11,8 +11,8 @@
         }
         {
           block = "networkmanager";
-          on_click = "nm-connection-editor";
-          ap_format = "{strength} {ssid}";
+          on_click = "foot nmtui";
+          ap_format = "{strength}";
           device_format = "{icon}{ap}";
           connection_format = "{devices}";
           interface_name_exclude = [
