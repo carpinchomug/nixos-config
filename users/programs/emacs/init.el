@@ -456,4 +456,8 @@
   :hook ((LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . TeX-fold-mode))
   :init
-  (setq TeX-engine 'luatex))
+  (setq TeX-engine 'luatex)
+  (setq TeX-parse-self t)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-source-correlate-start-server t))
+
