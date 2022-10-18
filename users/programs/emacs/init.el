@@ -119,8 +119,7 @@
 ;; Org-mode
 ;; Turn of viaual line mode in org mode
 (use-package org
-  :hook ((org-mode . visual-line-mode)
-	 (org-mode . (lambda () (electric-pair-local-mode -1))))
+  :hook (org-mode . visual-line-mode)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
