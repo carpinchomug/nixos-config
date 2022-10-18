@@ -130,16 +130,16 @@ in
             dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
           '';
         }
-        {
-          command = ''
-            swaymsg "workspace 0; exec emacs --fullscreen"
-          '';
-        }
-        {
-          command = ''
-            swaymsg "workspace 1"
-          '';
-        }
+        # {
+        #   command = ''
+        #     swaymsg "workspace 0; exec emacs --fullscreen"
+        #   '';
+        # }
+        # {
+        #   command = ''
+        #     swaymsg "workspace 1"
+        #   '';
+        # }
         {
           command = ''
             kmonad ~/.config/kmonad/config.kbd

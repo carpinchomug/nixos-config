@@ -34,7 +34,7 @@ in
         # "${mod}+a}" = "focus parent";
 
         # workspace        
-        "${mod}+Shift+Return" = "workspace number 0";
+        # "${mod}+Shift+Return" = "workspace number 0";
         "${mod}+1" = "workspace number 1";
         "${mod}+2" = "workspace number 2";
         "${mod}+3" = "workspace number 3";
