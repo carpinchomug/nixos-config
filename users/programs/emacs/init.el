@@ -181,6 +181,9 @@
                                  (setq-local eldoc-documentation-strategy
                                              #'eldoc-documentation-compose)))))
 
+(use-package eglot-jl
+  :init
+  (eglot-jl-init))
 
 ;; (add-hook 'eglot-managed-mode-hook
 ;;           (lambda ()

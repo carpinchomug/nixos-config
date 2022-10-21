@@ -13,6 +13,7 @@
 
       # lsp
       eglot
+      eglot-jl
 
       # org-mode
       org
