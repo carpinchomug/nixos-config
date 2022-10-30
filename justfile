@@ -5,7 +5,7 @@ alias sl := switch-local
 alias hl := switch-home-local
 
 
-update: _update-flake, switch-local, switch-home-local
+update: _update-flake switch-local switch-home-local
 
 gc:
 	sudo nix-collect-garbage -d
