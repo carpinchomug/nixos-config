@@ -1,6 +1,7 @@
 {
   imports = [
     ./sway
+    ./yambar
     ./fcitx5.nix
     ./fonts.nix
     ./gtk.nix

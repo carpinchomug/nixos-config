@@ -1,0 +1,117 @@
+icons: &icons Material Design Icons:pixelsize=18
+icon-margin: &icon-margin {margin: 2}
+
+bar:
+  height: 30
+  location: top
+  background: 000000ff
+  font: Noto Sans:pixelsize=16
+
+  left:
+    - i3:
+        anchors:
+          workspace: &workspace
+            tag: name
+            default: {string: {text: "{name}"}}
+            values: {0: {string: {text: 10}}}
+            on-click: "swaymsg workspace {name}"
+            margin: 6
+        spacing: 2
+        content:
+          "":
+            map:
+              tag: state
+              default:
+                map:
+                  <<: *workspace
+              values:
+                focused:
+                  map:
+                    <<: *workspace
+                    deco: {underline: {color: ffffffff, size: 2}}
+
+  center:
+    - clock:
+        time-format: "%-H:%M"
+        date-format: "%a %-d %b"
+        content:
+          string: {text: "{date} {time}"}
+
+  right:
+    - removables:
+        content:
+          map:
+            margin: 15
+            tag: mounted
+            values:
+              false:
+                string:
+                  on-click: "udisksctl mount -b {device}"
+                  text: "Unmounted: {label}"
+              true:
+                string:
+                  on-click: "udisksctl unmount -b {device}"
+                  text: "Mounted: {label}"
+    - alsa:
+        card: default
+        mixer: Master
+        content:
+          map:
+            <<: *icon-margin
+            tag: muted
+            values:
+              true:
+                string: {text: "󰝟", font: *icons}
+              false:
+                ramp:
+                  tag: percent
+                  items:
+                    - string: {text: "󰕿"}
+                    - string: {text: "󰖀"}
+                    - string: {text: "󰕾"}
+    - network:
+        name: wlp0s20f3
+        content:
+          map:
+            <<: *icon-margin
+            tag: state
+            default:
+              string: {text: "󰸋", font: *icons}
+            values:
+              down:
+                string: {text: "󰖪", font: *icons}
+              up:
+                string: {text: "󰖩", font: *icons}
+    - battery:
+        name: BAT0
+        poll-interval: 30
+        anchors:
+          discharging: &discharging
+            list:
+              items:
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: "󰁺", foreground: ff0000ff, font: *icons}
+                      - string: {text: "󰁻", foreground: ffa600ff, font: *icons}
+                      - string: {text: "󰁼", font: *icons}
+                      - string: {text: "󰁽", font: *icons}
+                      - string: {text: "󰁾", font: *icons}
+                      - string: {text: "󰁿", font: *icons}
+                      - string: {text: "󰂀", font: *icons}
+                      - string: {text: "󰂁", font: *icons}
+                      - string: {text: "󰂂", font: *icons}
+                      - string: {text: "󰁹", font: *icons}
+        content:
+          map:
+            <<: *icon-margin
+            tag: state
+            default:
+              <<: *discharging
+            values:
+              charging:
+                string: {text: 󰂄, foreground: 00ff00ff, font: *icons}
+              full:
+                string: {text: 󰁹, foreground: 00ff00ff, font: *icons}
+              not charging:
+                string: {text: 󱞜, font: *icons}
