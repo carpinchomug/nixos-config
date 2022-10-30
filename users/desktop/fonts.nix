@@ -5,6 +5,8 @@
 
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "Noto" ]; })
+    material-icons
     material-design-icons
+    font-awesome
   ];
 }
