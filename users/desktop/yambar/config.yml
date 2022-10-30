@@ -2,7 +2,7 @@ icons: &icons Material Design Icons:pixelsize=18
 icon-margin: &icon-margin {margin: 2}
 
 bar:
-  height: 30
+  height: 26
   location: top
   background: 000000ff
   font: Noto Sans:pixelsize=16
@@ -46,29 +46,12 @@ bar:
             values:
               false:
                 string:
-                  on-click: "udisksctl mount -b {device}"
                   text: "Unmounted: {label}"
+                  on-click: "udisksctl mount -b {device}"
               true:
                 string:
-                  on-click: "udisksctl unmount -b {device}"
                   text: "Mounted: {label}"
-    - alsa:
-        card: default
-        mixer: Master
-        content:
-          map:
-            <<: *icon-margin
-            tag: muted
-            values:
-              true:
-                string: {text: "󰝟", font: *icons}
-              false:
-                ramp:
-                  tag: percent
-                  items:
-                    - string: {text: "󰕿"}
-                    - string: {text: "󰖀"}
-                    - string: {text: "󰕾"}
+                  on-click: "udisksctl unmount -b {device}"
     - network:
         name: wlp0s20f3
         content:
@@ -115,3 +98,10 @@ bar:
                 string: {text: 󰁹, foreground: 00ff00ff, font: *icons}
               not charging:
                 string: {text: 󱞜, font: *icons}
+    - label:
+        content:
+          string:
+            text: "󰐥"
+            font: *icons
+            margin: 5
+            on-click: "wlogout"
