@@ -98,7 +98,8 @@ in
     rustfmt
     rust-analyzer
 
-    fluent-icon-theme
+    # Yaml
+    nodePackages.yaml-language-server
   ];
 
   programs.exa = {

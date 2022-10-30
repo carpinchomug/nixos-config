@@ -5,8 +5,7 @@ alias sl := switch-local
 alias hl := switch-home-local
 
 
-update:
-	nix flake update
+update: _update-flake, switch-local, switch-home-local
 
 gc:
 	sudo nix-collect-garbage -d
@@ -35,3 +34,6 @@ switch-home-local:
 	nix build .#homeConfigurations.akiyoshi.activationPackage
 	./result/activate
 	rm result
+
+_update-flake:
+	nix flake update
