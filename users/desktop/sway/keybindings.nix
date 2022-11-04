@@ -17,6 +17,12 @@ in
         "${mod}+b" = "exec firefox";
         "${mod}+n" = "exec notify-status";
 
+
+
+        "${mod}+w" = ''
+          exec env RUST_BACKTRACE=1 \
+          swayr switch-workspace-or-window >> /tmp/swayr.log 2>&1
+        '';
         # "${mod}+Shift+q" = "kill";
 
         # "${mod}+Shift+c" = "reload";
@@ -30,9 +36,9 @@ in
         "${mod}+v" = "splith";
 
         "${mod}+t" = "layout tabbed";
-        "${mod}+w" = "layout toggle split";
+        "${mod}+e" = "layout toggle split";
 
-        # "${mod}+a}" = "focus parent";
+        "${mod}+a" = "focus parent";
 
         # workspace        
         # "${mod}+Shift+Return" = "workspace number 0";
