@@ -33,18 +33,11 @@ in
     inkscape
     blender
     freecad
-    libsForQt5.kdenlive
     kmonad-static
-    yambar
-
-    networkmanagerapplet
 
     gnumake
     just
     pre-commit
-
-    libnotify
-    acpi
 
 
     # Bash
