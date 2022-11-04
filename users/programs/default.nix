@@ -43,6 +43,9 @@ in
     just
     pre-commit
 
+    libnotify
+    acpi
+
 
     # Bash
     nodePackages.bash-language-server
