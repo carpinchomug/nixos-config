@@ -15,6 +15,7 @@ in
         # "${mod}+Return" = "exec ${cfg.terminal}";
         # "${mod}+d" = "exec ${cfg.menu}";
         "${mod}+b" = "exec firefox";
+        "${mod}+n" = "exec notify-status";
 
         # "${mod}+Shift+q" = "kill";
 
