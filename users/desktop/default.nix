@@ -6,6 +6,7 @@
     ./fonts.nix
     ./gtk.nix
     ./i3status-rust.nix
+    ./mako.nix
     ./notify-status.nix
   ];
 

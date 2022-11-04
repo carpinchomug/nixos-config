@@ -20,12 +20,6 @@
     pamixer
   ];
 
-  programs.mako = {
-    enable = true;
-    defaultTimeout = 20000; # specified in milliseconds
-    height = 150;
-  };
-
   wayland.windowManager.sway.extraSessionCommands = ''
     if [[ ! -d ~/Pictures/Screenshots ]]; then
       mkdir -p ~/Pictures/Screenshots
