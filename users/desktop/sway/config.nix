@@ -151,6 +151,11 @@ in
             yambar
           '';
         }
+        {
+          command = ''
+            exec env RUST_BACKTRACE=1 RUST_LOG=swayr=debug swayrd > /tmp/swayrd.log 2>&1
+          '';
+        }
       ];
     };
 

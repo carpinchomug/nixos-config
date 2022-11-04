@@ -12,6 +12,7 @@
     wl-clipboard
     wlogout
     swaybg
+    swayr
 
     # audio stuff
     pulseaudio
