@@ -28,7 +28,7 @@ in
         hide-when-typing = "yes";
       };
 
-      colors = themes.solarized-light // { alpha = 1.0; };
+      colors = themes.rose-pine-dawn // { alpha = 1.0; };
     };
   };
 }

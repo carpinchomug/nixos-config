@@ -36,41 +36,26 @@
     bright7 = "e0def4";
   };
 
-  custom = {
-    foreground = "ffffff";
-    background = "242424";
+  rose-pine-dawn = {
+    foreground = "575279";
+    background = "faf4ed";
 
-    # black
-    regular0 = "242424";
-    bright0 = "242424";
-
-    # red
-    regular1 = "de6e7c";
-    bright1 = "de6e7c";
-
-    # green
-    regular2 = "b7d9a4";
-    bright2 = "b7d9a4";
-
-    # yellow -> magenta
-    regular5 = "fef8b2";
-    bright5 = "fef8b2";
-
-    # blue -> cyan
-    regular6 = "277b96";
-    bright6 = "277b96";
-
-    # magenta -> yellow
-    regular3 = "9a835d";
-    bright3 = "9a835d";
-
-    # cyan -> blue
-    regular4 = "99dfd8";
-    bright4 = "99dfd8";
-
-    # white
-    regular7 = "ffffff";
-    bright7 = "ffffff";
+    regular0 = "f2e9e1";
+    regular1 = "b4637a";
+    regular2 = "286983";
+    regular3 = "ea9d34";
+    regular4 = "56949f";
+    regular5 = "907aa9";
+    regular6 = "d7827e";
+    regular7 = "575279";
+    bright0 = "9893a5";
+    bright1 = "b4637a";
+    bright2 = "286983";
+    bright3 = "ea9d34";
+    bright4 = "56949f";
+    bright5 = "907aa9";
+    bright6 = "d7827e";
+    bright7 = "575279";
   };
 
   wombat = {
@@ -208,5 +193,68 @@
     dim5 = "8c738c";
     dim6 = "6d96a5";
     dim7 = "aeb3bb";
+  };
+
+  modus-operandi = {
+    background = "ffffff";
+    foreground = "000000";
+    regular0 = "000000";
+    regular1 = "a60000";
+    regular2 = "005e00";
+    regular3 = "813e00";
+    regular4 = "0031a9";
+    regular5 = "721045";
+    regular6 = "00538b";
+    regular7 = "bfbfbf";
+    bright0 = "595959";
+    bright1 = "972500";
+    bright2 = "315b00";
+    bright3 = "70480f";
+    bright4 = "2544bb";
+    bright5 = "5317ac";
+    bright6 = "005a5f";
+    bright7 = "ffffff";
+  };
+
+  one-light = {
+    background = "f8f8f8";
+    foreground = "2a2b33";
+    regular0 = "000000";
+    regular1 = "de3d35";
+    regular2 = "3e953a";
+    regular3 = "d2b67b";
+    regular4 = "2f5af3";
+    regular5 = "950095";
+    regular6 = "3e953a";
+    regular7 = "bbbbbb";
+    bright0 = "000000";
+    bright1 = "de3d35";
+    bright2 = "3e953a";
+    bright3 = "d2b67b";
+    bright4 = "2f5af3";
+    bright5 = "a00095";
+    bright6 = "3e953a";
+    bright7 = "ffffff";
+  };
+
+  tomorrow = {
+    background = "ffffff";
+    foreground = "4c4c4c";
+    regular0 = "000000";
+    regular1 = "c82828";
+    regular2 = "708b00";
+    regular3 = "e9b600";
+    regular4 = "4170ae";
+    regular5 = "8958a7";
+    regular6 = "3d999f";
+    regular7 = "fffefe";
+    bright0 = "000000";
+    bright1 = "c82828";
+    bright2 = "708b00";
+    bright3 = "e9b600";
+    bright4 = "4170ae";
+    bright5 = "8958a7";
+    bright6 = "3d999f";
+    bright7 = "fffefe";
   };
 }
