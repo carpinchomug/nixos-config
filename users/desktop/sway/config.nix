@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  wallpaper = builtins.toString config.xdg.configHome + "/wallpapers/kiwi.jpg";
+  wallpaper = builtins.toString config.xdg.configHome + "/wallpapers/serenity.png";
 
 in
 {
