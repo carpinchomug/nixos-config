@@ -95,13 +95,14 @@
 
 
 ;; (load-theme 'modus-operandi t)
-(use-package doom-themes
-  :config
-  (load-theme 'doom-material t))
+(load-theme 'material-light t)
+;; (use-package doom-themes
+;;   :config
+;;   (load-theme 'doom-material t))
 
-(use-package doom-modeline
-  :init
-  (doom-modeline-mode 1))
+;; (use-package doom-modeline
+;;   :init
+;;   (doom-modeline-mode 1))
 
 (use-package which-key
   :config

@@ -22,6 +22,7 @@
 
       doom-themes
       doom-modeline
+      material-theme
 
       # utilities
       corfu # completeion
