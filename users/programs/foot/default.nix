@@ -28,7 +28,7 @@ in
         hide-when-typing = "yes";
       };
 
-      colors = themes.modus-operandi // { alpha = 1.0; };
+      colors = themes.one-light // { alpha = 1.0; };
     };
   };
 }

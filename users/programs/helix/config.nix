@@ -1,6 +1,6 @@
 {
   programs.helix.settings = {
-    theme = "rose_pine_dawn";
+    theme = "onelight";
 
     editor = {
       line-number = "relative";

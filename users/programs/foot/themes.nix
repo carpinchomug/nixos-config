@@ -258,7 +258,6 @@
     bright7 = "fffefe";
   };
 
-
   material = {
     foreground = "ECEFF1";
     background = "263238";
