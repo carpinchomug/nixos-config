@@ -43,12 +43,12 @@ in
     font = {
       package = pkgs.noto-fonts;
       name = "Noto Sans";
-      size = 12;
+      size = 11;
     };
 
     theme = {
-      package = pkgs.whitesur-gtk-theme;
-      name = "WhiteSur-Light";
+      package = pkgs.adw-gtk3;
+      name = "adw-gtk3";
     };
 
     iconTheme = {
