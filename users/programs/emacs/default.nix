@@ -20,9 +20,9 @@
 
       auctex
 
-      doom-themes
-      doom-modeline
-      material-theme
+      # doom-themes
+      # doom-modeline
+      # material-theme
 
       # utilities
       corfu # completeion
