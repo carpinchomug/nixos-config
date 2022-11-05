@@ -20,6 +20,9 @@
 
       auctex
 
+      doom-themes
+      doom-modeline
+
       # utilities
       corfu # completeion
       magit

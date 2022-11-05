@@ -94,8 +94,14 @@
 ;; (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
 
 
-(load-theme 'modus-operandi t)
+;; (load-theme 'modus-operandi t)
+(use-package doom-themes
+  :config
+  (load-theme 'doom-material t))
 
+(use-package doom-modeline
+  :init
+  (doom-modeline-mode 1))
 
 (use-package which-key
   :config
