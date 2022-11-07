@@ -25,4 +25,8 @@
       mkdir -p ~/Pictures/Screenshots
     fi
   '';
+
+  programs.swaylock.settings = {
+    image = "$HOME/.config/wallpapers/serenity.png";
+  };
 }
