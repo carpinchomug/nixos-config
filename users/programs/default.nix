@@ -39,6 +39,8 @@ in
     just
     pre-commit
 
+    exercism
+
 
     # Bash
     nodePackages.bash-language-server
