@@ -1,4 +1,4 @@
-{ pkgs, emacs-overlay, ... }:
+{ pkgs, ... }:
 
 {
   # Update the state version as needed.
@@ -18,8 +18,6 @@
       #   "python3.10-mistune-0.8.4"
       # ];
     };
-
-    overlays = [ emacs-overlay.overlay ];
   };
 
   # Let Home Manager install and manage itself.
@@ -31,5 +29,6 @@
     ./desktop
     ./programs
     ./services
+    ./overlays
   ];
 }
