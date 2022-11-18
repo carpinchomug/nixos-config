@@ -34,6 +34,7 @@ in
     blender
     freecad
     kmonad-static
+    zotero
 
     gnumake
     just
