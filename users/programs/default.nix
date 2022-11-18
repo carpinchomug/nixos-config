@@ -87,7 +87,6 @@ in
       ipython
       python-lsp-server
       pyls-isort
-      jupyter
     ]))
 
     # Rust
