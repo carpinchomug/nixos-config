@@ -16,14 +16,13 @@ in
         # "${mod}+d" = "exec ${cfg.menu}";
         "${mod}+b" = "exec firefox";
         "${mod}+n" = "exec notify-status";
-
-
+        "${mod}+e" = "exec emacs";
 
         "${mod}+w" = ''
           exec env RUST_BACKTRACE=1 \
           swayr switch-workspace-or-window >> /tmp/swayr.log 2>&1
         '';
-        # "${mod}+Shift+q" = "kill";
+        "${mod}+q" = "kill";
 
         # "${mod}+Shift+c" = "reload";
         # "${mod}+Shift+e" = "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'";
@@ -36,7 +35,7 @@ in
         "${mod}+v" = "splith";
 
         "${mod}+t" = "layout tabbed";
-        "${mod}+e" = "layout toggle split";
+        "${mod}+c" = "layout toggle split";
 
         "${mod}+a" = "focus parent";
 
