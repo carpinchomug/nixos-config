@@ -20,7 +20,7 @@
 
 ;; Set fonts
 (add-to-list 'default-frame-alist
-	     '(font . "FiraCode Nerd Font-13"))
+             '(font . "FiraCode Nerd Font-13"))
 (set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP")
 
 ;; Scroll line by line
@@ -69,11 +69,11 @@
 (setq display-line-numbers-grow-only t)
 
 (dolist (mode '(c-mode-hook
-		emacs-lisp-mode-hook
-		js-mode-hook
-		python-mode-hook
-		sh-mode-hook
-		text-mode-hook))
+                emacs-lisp-mode-hook
+                js-mode-hook
+                python-mode-hook
+                sh-mode-hook
+                text-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode))))
 
 
@@ -142,9 +142,9 @@
   (setq org-edit-src-content-indentation 0)
 
   (setq org-babel-default-header-args:jupyter-python '((:session . "py")
-						       (:kernel . "python3")))
+                                                       (:kernel . "python3")))
   (setq org-babel-default-header-args:jupyter-julia '((:session . "jl")
-						      (:kernel . "julia-1.8")))
+                                                      (:kernel . "julia-1.8")))
 
   (require 'org-tempo)
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
@@ -192,11 +192,10 @@
 ;; Eglot
 ;; Add language mode hooks
 (use-package eglot
-  :hook ((rust-mode . eglot-ensure)
-	 (python-mode . eglot-ensure)
-	 (nix-mode . eglot-ensure)
-         (LaTeX-mode . eglot-ensure)
-         ((tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
+  :hook (((rust-mode
+           python-mode
+           nix-mode
+           LaTeX-mode tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
          (eglot-managed-mode . (lambda ()
                                  (setq-local eldoc-documentation-strategy
                                              #'eldoc-documentation-compose)))))
