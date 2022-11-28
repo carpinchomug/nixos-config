@@ -46,12 +46,12 @@
 ;; Zenakaku doesn't get recognised by fcitx 5 or maybe it doesn't even get triggered at all.
 (deflayer qwerty
   ;; zenkakuhankaku
-  hangeul
-  grv  1    2       3       4       5    6    7          8          9          0    -    =    bspc
-  tab  q    w       e       r       t    y    u          i          o          p    [    ]    \
-  esc  a    @s_lalt @d_lsft @f_lctl g    h    @j_rctl    @k_rsft    @l_ralt    ;    '    ret
-  lsft z    x       c       v       b    n    m          ,          .          /    rsft
-  wkup lctl lmet    lalt           spc                              ralt       prnt caps
+  caps
+  grv  1    2       3       4       5    6    7          8          9          0    -       =    bspc
+  tab  q    w       e       r       t    y    u          i          o          p    [       ]    \
+  esc  a    @s_lalt @d_lsft @f_lctl g    h    @j_rctl    @k_rsft    @l_ralt    ;    '       ret
+  lsft z    x       c       v       b    n    m          ,          .          /    hangeul
+  wkup lctl lmet    lalt           spc                              ralt       prnt rctl
 )
 
 ;; (defsrc
