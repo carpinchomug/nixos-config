@@ -9,6 +9,7 @@ in
     ./emacs
     ./foot
     ./helix
+    ./kmonad
     ./zathura
     ./bash.nix
     ./chromium.nix
@@ -115,8 +116,6 @@ in
     enable = true;
     nix-direnv.enable = true;
   };
-
-  xdg.configFile."kmonad/config.kbd".source = ./kmonad/config.kbd;
 
   home.file.".latexmkrc".source = ./latexmkrc;
 }
