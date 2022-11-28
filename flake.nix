@@ -42,14 +42,6 @@
         extraSpecialArgs = inputs;
       };
 
-      devShell.${system} = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          gnumake
-          just
-          pre-commit
-        ];
-      };
-
       formatter.${system} = pkgs.nixpkgs-fmt;
     };
 }
