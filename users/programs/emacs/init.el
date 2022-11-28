@@ -177,6 +177,17 @@
   :config
   (setq rustic-lsp-client 'eglot))
 
+;; Tex
+(use-package tex
+  :ensure auctex
+  :hook ((LaTeX-mode . LaTeX-math-mode)
+         (LaTeX-mode . TeX-fold-mode))
+  :init
+  (setq TeX-engine 'luatex)
+  (setq TeX-parse-self t)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-source-correlate-start-server t))
+
 
 ;; Eglot
 ;; Add language mode hooks
@@ -184,6 +195,8 @@
   :hook ((rust-mode . eglot-ensure)
 	 (python-mode . eglot-ensure)
 	 (nix-mode . eglot-ensure)
+         (LaTeX-mode . eglot-ensure)
+         ((tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
          (eglot-managed-mode . (lambda ()
                                  (setq-local eldoc-documentation-strategy
                                              #'eldoc-documentation-compose)))))
@@ -196,37 +209,6 @@
 ;;           (lambda ()
 ;;             (setq-local eldoc-documentation-strategy
 ;;                         #'eldoc-documentation-compose)))
-
-
-;; (use-package lsp-mode
-;;   :init
-;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook ((julia-mode . lsp)
-;; 	 (rustic-mode . lsp)
-;; 	 (nix-mode . lsp)
-;; 	 (python-mode . lsp)
-;; 	 (lsp-mode . lsp-enable-which-key-integration))
-;;   :commands lsp)
-
-;; (use-package lsp-ui)
-
-;; (use-package lsp-jedi
-;;   :config
-;;   (with-eval-after-load "lsp-mode"
-;;     (add-to-list 'lsp-disabled-clients 'pyls)
-;;     (add-to-list 'lsp-disabled-clients 'pylsp)))
-
-;; (use-package lsp-pyright
-;;   :ensure t
-;;   :hook (python-mode . (lambda ()
-;;                           (require 'lsp-pyright)
-;;                           (lsp))))  ; or lsp-deferred
-
-;; (use-package lsp-julia
-;;   :config
-;;   (setq lsp-julia-package-dir nil)
-;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.7"))
 
 
 (use-package corfu
@@ -458,15 +440,4 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
-
-
-(use-package tex
-  :ensure auctex
-  :hook ((LaTeX-mode . LaTeX-math-mode)
-         (LaTeX-mode . TeX-fold-mode))
-  :init
-  (setq TeX-engine 'luatex)
-  (setq TeX-parse-self t)
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-  (setq TeX-source-correlate-start-server t))
 

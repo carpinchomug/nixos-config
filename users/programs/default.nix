@@ -73,6 +73,7 @@ in
     texlive.combined.scheme-full
     bibutils
     texlab
+    lua53Packages.digestif
 
     # Lua
     sumneko-lua-language-server
