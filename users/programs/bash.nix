@@ -3,7 +3,7 @@
     enable = true;
 
     profileExtra = ''
-      export EDITOR=hx
+      # export EDITOR=hx
       export PATH=/home/akiyoshi/.cargo/bin:$PATH
 
       # Start sway
