@@ -32,7 +32,7 @@
 )
 
 (defalias
-  ;; ctl_esc (tap-hold-next-release 180 esc lctl)
+  han_sft (tap-hold-next-release 180 hangeul lsft)
 
   s_lalt (tap-hold-next-release 180 s lalt)
   d_lsft (tap-hold-next-release 180 d lsft)
@@ -47,11 +47,11 @@
 (deflayer qwerty
   ;; zenkakuhankaku
   caps
-  grv  1    2       3       4       5    6    7          8          9          0    -       =    bspc
-  tab  q    w       e       r       t    y    u          i          o          p    [       ]    \
-  esc  a    @s_lalt @d_lsft @f_lctl g    h    @j_rctl    @k_rsft    @l_ralt    ;    '       ret
-  lsft z    x       c       v       b    n    m          ,          .          /    hangeul
-  wkup lctl lmet    lalt           spc                              ralt       prnt rctl
+  grv       1    2       3       4       5    6    7          8          9          0    -       =    bspc
+  tab       q    w       e       r       t    y    u          i          o          p    [       ]    \
+  esc       a    @s_lalt @d_lsft @f_lctl g    h    @j_rctl    @k_rsft    @l_ralt    ;    '       ret
+  @han_sft z    x       c       v       b    n    m          ,          .          /    rsft
+  wkup      lctl lmet    lalt           spc                              ralt       prnt rctl
 )
 
 ;; (defsrc
