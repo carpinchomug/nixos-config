@@ -16,7 +16,7 @@ in
         # "${mod}+d" = "exec ${cfg.menu}";
         "${mod}+b" = "exec firefox";
         "${mod}+n" = "exec notify-status";
-        "${mod}+e" = "exec emacsclient";
+        "${mod}+e" = "exec $EDITOR"; # emacsclient
 
         "${mod}+w" = ''
           exec env RUST_BACKTRACE=1 \
