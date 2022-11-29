@@ -1,6 +1,17 @@
 { pkgs, ... }:
 
 {
+  services.emacs = {
+    enable = true;
+    defaultEditor = true;
+    client = {
+      enable = true;
+      arguments = [
+        "-c"
+      ];
+    };
+  };
+
   programs.emacs = {
     enable = true;
     package = pkgs.emacsPgtkNativeComp; # gcc emacs pure gtk
