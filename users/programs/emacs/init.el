@@ -19,9 +19,16 @@
 (setq use-dialog-box nil)
 
 ;; Set fonts
+;; (add-to-list 'default-frame-alist
+;;              '(font . "FiraCode Nerd Font-13"))
+;; (set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP")
 (add-to-list 'default-frame-alist
-             '(font . "FiraCode Nerd Font-13"))
-(set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP")
+           '(font . "FiraCode Nerd Font-13"))
+(defun setup-font ()
+  (set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP"))
+
+(add-hook 'after-init-hook 'setup-font)
+(add-hook 'server-after-make-frame-hook 'setup-font)
 
 ;; Scroll line by line
 (setq scroll-step 1)
@@ -177,16 +184,20 @@
   :config
   (setq rustic-lsp-client 'eglot))
 
-;; Tex
-(use-package tex
+;; LaTeX
+(use-package latex
   :ensure auctex
   :hook ((LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . TeX-fold-mode))
   :init
   (setq TeX-engine 'luatex)
-  (setq TeX-parse-self t)
+  (setq TeX-parse-self t) ; Enable parse on load.
+  (setq TeX-auto-save t) ; Enable parse on save.
+  (setq-default TeX-master nil)
+  (setq TeX-force-default-mode t)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-  (setq TeX-source-correlate-start-server t))
+  (setq TeX-source-correlate-start-server t)
+  (setq LaTeX-electric-left-right-brace t))
 
 
 ;; Eglot
@@ -198,7 +209,11 @@
            LaTeX-mode tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
          (eglot-managed-mode . (lambda ()
                                  (setq-local eldoc-documentation-strategy
-                                             #'eldoc-documentation-compose)))))
+                                             #'eldoc-documentation-compose))))
+  :config
+  (add-to-list 'eglot-server-programs
+               '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
+
 
 (use-package eglot-jl
   :init
