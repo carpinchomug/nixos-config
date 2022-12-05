@@ -281,7 +281,7 @@
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
-  :config
+  :init
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
   ;; Enable indentation+completion using the TAB key.
