@@ -346,7 +346,10 @@
   :hook ((nix-mode
           rustic-mode
           python-mode
-          tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure))
+          LaTeX-mode bibtex-mode) . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
 
 
 (use-package julia-mode)
