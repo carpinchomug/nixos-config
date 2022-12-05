@@ -341,10 +341,10 @@
 ;; LSP client
 (setq )
 (use-package eglot
-  :hook ((nix-mode
-          python-mode
-          rust-mode
-          TeX-modes)) . eglot-ensure)
+  :hook (((nix-mode
+           rustic-mode
+           python-mode) . eglot-ensure)
+         (TeX-modes . eglot-ensure))
 
 
 (use-package julia-mode)
