@@ -21,6 +21,7 @@
       julia-mode
       nix-mode
       rustic
+      auctex
 
       # lsp
       eglot
@@ -28,7 +29,7 @@
       # org-mode
       org
 
-      auctex
+      evil
 
       # utilities
       corfu # completeion

@@ -291,6 +291,9 @@
   (global-corfu-mode))
 
 
+(use-package evil)
+
+
 (use-package magit
   :commands magit-status)
 
