@@ -1,39 +1,43 @@
+;; Set nil if emacs isn't managed by nix.
+(setq use-nixpkgs t)
+
+
 (require 'package)
+(unless use-nixpkgs
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (eval-when-compile
   (require 'use-package))
+(unless use-nixpkgs
+  (setq use-package-always-ensure t))
 
 
-;; UI
-;; Remove some UI components the frame
+;; Remove some GUI components
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-
-
-;; Launch into a scratch buffer instead of the startup screen
 (setq inhibit-startup-message t)
+
 
 ;; Prevent pop-up window when prompting
 (setq use-dialog-box nil)
 
+
 ;; Set fonts
-;; (add-to-list 'default-frame-alist
-;;              '(font . "FiraCode Nerd Font-13"))
-;; (set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP")
-(add-to-list 'default-frame-alist
-           '(font . "FiraCode Nerd Font-13"))
-(defun setup-font ()
+(add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font-13"))
+
+;; Fontsets will be correctly configured for emacsclient with these hooks
+(defun setup-fontsets ()
   (set-fontset-font t 'japanese-jisx0208 "Noto Sans CJK JP"))
+(add-hook 'after-init-hook 'setup-fontsets)
+(add-hook 'server-after-make-frame-hook 'setup-fontsets)
 
-(add-hook 'after-init-hook 'setup-font)
-(add-hook 'server-after-make-frame-hook 'setup-font)
 
-;; Scroll line by line
+;; Scroll one line at a time
 (setq scroll-step 1)
 
-;; Smooth scrolling
+;; Enable smooth scrolling
 (pixel-scroll-precision-mode)
 (setq pixel-scroll-precision-use-momentum t)
 
@@ -44,28 +48,19 @@
 
 
 ;; Kill the current dired buffer when another dired buffer is created.
-;; With this option turned off, a dired buffer is attached to each directory
-;; I visit.
 (setq dired-kill-when-opening-new-dired-buffer t)
 
 
-;; Custom keybindings
 ;; Bind M-o to other-window
 (global-set-key (kbd "M-o") 'other-window)
 
 
-;; Activate eshell on startup
-;; (add-hook 'emacs-startup-hook (lambda () (eshell)))
-
-
-;; Run `M-x recentf-open-files` to open recent files
 (recentf-mode)
 
 
 (setq-default indent-tabs-mode nil)
 
 
-;; Enable auto-pairing
 (electric-pair-mode)
 
 
@@ -75,13 +70,8 @@
 (setq display-line-numbers-width-start t)
 (setq display-line-numbers-grow-only t)
 
-(dolist (mode '(c-mode-hook
-                emacs-lisp-mode-hook
-                js-mode-hook
-                python-mode-hook
-                sh-mode-hook
-                text-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode))))
+(add-hook 'text-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 
 ;; Keep command history
@@ -89,221 +79,16 @@
 (savehist-mode)
 
 
-;; Remember the last visited place in a file
-;; (save-place-mode)
-
-
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode)
 
 
-;; (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-;; (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)
-
-
 (load-theme 'modus-operandi t)
-;; (load-theme 'material-light t)
-;; (use-package doom-themes
-;;   :config
-;;   (load-theme 'doom-material t))
 
-;; (use-package doom-modeline
-;;   :init
-;;   (doom-modeline-mode 1))
 
 (use-package which-key
   :config
   (which-key-mode))
-
-
-(use-package magit)
-
-
-(use-package pdf-tools
-  :init
-  (pdf-tools-install))
-
-
-;; Direnv
-(use-package direnv
-  :config
-  (direnv-mode))
-
-
-;; Org-mode
-;; Turn of viaual line mode in org mode
-(use-package org
-  :hook (org-mode . visual-line-mode)
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (julia . t)
-     (python . t)
-     (shell . t)
-     (jupyter . t))) ; jupyter must be added last
-
-  (setq org-startup-with-inline-images t)
-  (setq org-confirm-babel-evaluate nil)
-
-  (setq org-edit-src-content-indentation 0)
-
-  (setq org-babel-default-header-args:jupyter-python '((:session . "py")
-                                                       (:kernel . "python3")))
-  (setq org-babel-default-header-args:jupyter-julia '((:session . "jl")
-                                                      (:kernel . "julia-1.8")))
-
-  (require 'org-tempo)
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))
-  (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
-  (add-to-list 'org-structure-template-alist '("jp" . "src jupyter-python"))
-  (add-to-list 'org-structure-template-alist '("jj" . "src jupyter-julia")))
-
-
-(use-package jupyter)
-
-
-;; Julia mode
-(use-package julia-mode
-  :hook (julia-mode . display-line-numbers-mode))
-
-
-;; Nix mode
-;; Automatically activate nix mode for .nix files
-(use-package nix-mode
-  :hook (nix-mode . display-line-numbers-mode)
-  :config
-  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode)))
-
-
-;; Rust mode
-(use-package rustic
-  :hook (rustic-mode . display-line-numbers-mode)
-  :config
-  (setq rustic-lsp-client 'eglot))
-
-;; LaTeX
-(use-package latex
-  :ensure auctex
-  :hook ((LaTeX-mode . LaTeX-math-mode)
-         (LaTeX-mode . TeX-fold-mode))
-  :init
-  (setq TeX-engine 'luatex)
-  (setq TeX-parse-self t) ; Enable parse on load.
-  (setq TeX-auto-save t) ; Enable parse on save.
-  (setq-default TeX-master nil)
-  (setq TeX-force-default-mode t)
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-  (setq TeX-source-correlate-start-server t)
-  (setq LaTeX-electric-left-right-brace t))
-
-
-;; Eglot
-;; Add language mode hooks
-(use-package eglot
-  :hook (((rust-mode
-           python-mode
-           nix-mode
-           LaTeX-mode tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
-         (eglot-managed-mode . (lambda ()
-                                 (setq-local eldoc-documentation-strategy
-                                             #'eldoc-documentation-compose))))
-  :config
-  (add-to-list 'eglot-server-programs
-               '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
-
-
-(use-package eglot-jl
-  :init
-  (eglot-jl-init))
-
-;; (add-hook 'eglot-managed-mode-hook
-;;           (lambda ()
-;;             (setq-local eldoc-documentation-strategy
-;;                         #'eldoc-documentation-compose)))
-
-
-(use-package corfu
-  ;; Optional customizations
-  :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-
-  ;; Enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-  :hook (eshell-mode . (lambda ()
-                         (setq-local corfu-auto nil)
-                         (corfu-mode)))
-
-  ;; Recommended: Enable Corfu globally.
-  ;; This is recommended since Dabbrev can be used globally (M-/).
-  ;; See also `corfu-excluded-modes'.
-  :init
-  (global-corfu-mode))
-
-;; A few more useful configurations...
-(use-package emacs
-  :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
-
-  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
-
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
-
-(defun corfu-send-shell (&rest _)
-  "Send completion candidate when inside comint/eshell."
-  (cond
-   ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
-    (eshell-send-input))
-   ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
-    (comint-send-input))))
-
-(advice-add #'corfu-insert :after #'corfu-send-shell)
-
-;; Silence the pcomplete capf, no errors or messages!
-;; (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-
-;; Ensure that pcomplete does not write to the buffer
-;; and behaves as a pure `completion-at-point-function'.
-;; (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
-
-
-(use-package marginalia
-  :config
-  (marginalia-mode))
-
-
-(use-package vertico
-  :config
-  (vertico-mode))
-
-
-(use-package orderless
-  :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
 
 
 ;; Example configuration for Consult
@@ -366,7 +151,6 @@
 
   ;; The :init configuration is always executed (Not lazy)
   :init
-
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
@@ -384,7 +168,6 @@
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
-
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -425,8 +208,6 @@
 
 
 (use-package embark
-  :ensure t
-
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -447,11 +228,170 @@
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t
   :after (embark consult)
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+
+(use-package marginalia
+  :config
+  (marginalia-mode))
+
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+
+(use-package vertico
+  :config
+  (vertico-mode))
+
+;; Corfu
+(defun setup-corfu-for-eshell ()
+  (setq-local corfu-auto nil)
+  (corfu-mode))
+
+(defun corfu-send-shell (&rest _)
+  "Send completion candidate when inside comint/eshell."
+  (cond
+   ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
+    (eshell-send-input))
+   ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
+    (comint-send-input))))
+
+(use-package corfu
+  ;; Optional customizations
+  :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+  :hook (eshell-mode . setup-corfu-for-eshell)
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `corfu-excluded-modes'.
+  :config
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete)
+  (advice-add #'corfu-insert :after #'corfu-send-shell)
+  (global-corfu-mode))
+
+
+(use-package magit
+  :commands magit-status)
+
+
+(use-package pdf-tools
+  :init
+  (pdf-tools-install))
+
+
+;; Direnv
+(use-package direnv
+  :config
+  (direnv-mode))
+
+
+;; Org-mode
+;; Turn of viaual line mode in org mode
+(use-package org
+  :hook (org-mode . visual-line-mode)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (julia . t)
+     (python . t)
+     (shell . t)
+     (jupyter . t))) ; jupyter must be added last
+
+  (setq org-startup-with-inline-images t)
+  (setq org-confirm-babel-evaluate nil)
+
+  (setq org-edit-src-content-indentation 0)
+
+  (setq org-babel-default-header-args:jupyter-python '((:session . "py")
+                                                       (:kernel . "python3")))
+  (setq org-babel-default-header-args:jupyter-julia '((:session . "jl")
+                                                      (:kernel . "julia-1.8")))
+
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
+  (add-to-list 'org-structure-template-alist '("jp" . "src jupyter-python"))
+  (add-to-list 'org-structure-template-alist '("jj" . "src jupyter-julia")))
+
+
+(use-package jupyter
+  :commands ((jupyter-run-repl)
+             (jupyter-run-server-repl)))
+
+
+;; Julia mode
+(use-package julia-mode)
+
+
+;; Nix mode
+;; Automatically activate nix mode for .nix files
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
+
+;; Rust mode
+(use-package rustic
+  :config
+  (setq rustic-lsp-client 'eglot))
+
+
+;; TeX
+(use-package tex
+  :ensure auctex
+  :hook ((LaTeX-mode . LaTeX-math-mode)
+         (LaTeX-mode . TeX-fold-mode))
+  :init
+  (setq TeX-engine 'luatex)
+  (setq TeX-parse-self t) ; Enable parse on load.
+  (setq TeX-auto-save t) ; Enable parse on save.
+  (setq-default TeX-master nil)
+  (setq TeX-force-default-mode t)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-source-correlate-start-server t)
+  (setq LaTeX-electric-left-right-brace t))
+
+
+;; Eglot
+;; Add language mode hooks
+(use-package eglot
+  :hook (((rust-mode
+           python-mode
+           nix-mode
+           LaTeX-mode tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
+         (eglot-managed-mode . (lambda ()
+                                 (setq-local eldoc-documentation-strategy
+                                             #'eldoc-documentation-compose))))
+  :config
+  (add-to-list 'eglot-server-programs
+               '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
+
+
+(use-package eglot-jl
+  :init
+  (eglot-jl-init))
+
 
