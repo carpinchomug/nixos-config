@@ -5,7 +5,7 @@ alias sl := switch-local
 alias hl := switch-home-local
 
 
-update: _update-flake switch-local switch-home-local
+update: switch-local switch-home-local
 
 gc:
 	sudo nix-collect-garbage -d
@@ -37,3 +37,5 @@ switch-home-local:
 
 _update-flake:
 	nix flake update
+	git add flake.lock
+	git commit -m "update flake"
