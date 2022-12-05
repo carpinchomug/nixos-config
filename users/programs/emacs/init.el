@@ -339,8 +339,7 @@
 
 
 (use-package jupyter
-  :commands ((jupyter-run-repl)
-             (jupyter-run-server-repl)))
+  :commands (jupyters-run-repl jupyter-run-server-repl))
 
 
 ;; Julia mode
