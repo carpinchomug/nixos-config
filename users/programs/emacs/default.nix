@@ -24,16 +24,11 @@
 
       # lsp
       eglot
-      eglot-jl
 
       # org-mode
       org
 
       auctex
-
-      # doom-themes
-      # doom-modeline
-      # material-theme
 
       # utilities
       corfu # completeion

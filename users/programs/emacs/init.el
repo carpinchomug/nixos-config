@@ -340,10 +340,10 @@
 
 ;; LSP client
 (use-package eglot
-  :hook (((nix-mode
-           rustic-mode
-           python-mode) . eglot-ensure)
-         (TeX-modes . eglot-ensure)))
+  :hook ((nix-mode
+          rustic-mode
+          python-mode
+          tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure))
 
 
 (use-package julia-mode)
@@ -370,8 +370,3 @@
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
   (setq TeX-source-correlate-start-server t)
   (setq LaTeX-electric-left-right-brace t))
-
-
-(use-package eglot-jl
-  :init
-  (eglot-jl-init))
