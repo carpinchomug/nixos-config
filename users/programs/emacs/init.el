@@ -296,8 +296,8 @@
 
 
 (use-package pdf-tools
-  :init
-  (pdf-tools-install))
+  :config
+  (pdf-loader-install))
 
 
 ;; Direnv
@@ -309,7 +309,6 @@
 ;; Org-mode
 ;; Turn of viaual line mode in org mode
 (use-package org
-  :hook (org-mode . visual-line-mode)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -317,18 +316,15 @@
      (julia . t)
      (python . t)
      (shell . t)
-     (jupyter . t))) ; jupyter must be added last
-
+     ;; jupyter must be added last
+     (jupyter . t)))
   (setq org-startup-with-inline-images t)
   (setq org-confirm-babel-evaluate nil)
-
   (setq org-edit-src-content-indentation 0)
-
   (setq org-babel-default-header-args:jupyter-python '((:session . "py")
                                                        (:kernel . "python3")))
   (setq org-babel-default-header-args:jupyter-julia '((:session . "jl")
                                                       (:kernel . "julia-1.8")))
-
   (require 'org-tempo)
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -342,51 +338,39 @@
   :commands (jupyters-run-repl jupyter-run-server-repl))
 
 
-;; Julia mode
+;; LSP client
+(setq )
+(use-package eglot
+  :hook ((nix-mode
+          python-mode
+          rust-mode
+          TeX-modes)) . eglot-ensure)
+
+
 (use-package julia-mode)
 
 
-;; Nix mode
-;; Automatically activate nix mode for .nix files
 (use-package nix-mode
   :mode "\\.nix\\'")
 
 
-;; Rust mode
 (use-package rustic
   :config
   (setq rustic-lsp-client 'eglot))
 
 
-;; TeX
 (use-package tex
   :ensure auctex
   :hook ((LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . TeX-fold-mode))
-  :init
+  :config
   (setq TeX-engine 'luatex)
   (setq TeX-parse-self t) ; Enable parse on load.
   (setq TeX-auto-save t) ; Enable parse on save.
   (setq-default TeX-master nil)
-  (setq TeX-force-default-mode t)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
   (setq TeX-source-correlate-start-server t)
   (setq LaTeX-electric-left-right-brace t))
-
-
-;; Eglot
-;; Add language mode hooks
-(use-package eglot
-  :hook (((rust-mode
-           python-mode
-           nix-mode
-           LaTeX-mode tex-mode context-mode texinfo-mode bibtex-mode) . eglot-ensure)
-         (eglot-managed-mode . (lambda ()
-                                 (setq-local eldoc-documentation-strategy
-                                             #'eldoc-documentation-compose))))
-  :config
-  (add-to-list 'eglot-server-programs
-               '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
 
 
 (use-package eglot-jl
