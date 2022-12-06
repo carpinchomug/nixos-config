@@ -30,6 +30,7 @@
       org
 
       evil
+      meow
 
       # utilities
       corfu # completeion
