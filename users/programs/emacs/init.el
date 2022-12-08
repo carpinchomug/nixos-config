@@ -13,6 +13,9 @@
   (setq use-package-always-ensure t))
 
 
+(setq warning-minimum-level :error)
+
+
 ;; Remove some GUI components
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -292,8 +295,10 @@
 
 
 (use-package evil
+  :custom
+  (evil-disable-insert-state-binginds t)
+  (evil-default-state 'emacs)
   :config
-  (setq evil-default-state 'emacs)
   (evil-set-initial-state 'prog-mode 'normal) 
   (evil-set-initial-state 'text-mode 'normal)
   (evil-mode))
