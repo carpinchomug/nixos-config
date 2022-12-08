@@ -14,7 +14,7 @@
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkNativeComp; # gcc emacs pure gtk
+    package = pkgs.emacsPgtk; # gcc emacs pure gtk
 
     extraPackages = epkgs: with epkgs; [
       # languages
