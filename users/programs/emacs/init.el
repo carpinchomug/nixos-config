@@ -294,14 +294,14 @@
   (global-corfu-mode))
 
 
-(use-package evil
-  :custom
-  (evil-disable-insert-state-binginds t)
-  (evil-default-state 'emacs)
-  :config
-  (evil-set-initial-state 'prog-mode 'normal) 
-  (evil-set-initial-state 'text-mode 'normal)
-  (evil-mode))
+;; (use-package evil
+;;   :custom
+;;   (evil-disable-insert-state-binginds t)
+;;   (evil-default-state 'emacs)
+;;   :config
+;;   (evil-set-initial-state 'prog-mode 'normal) 
+;;   (evil-set-initial-state 'text-mode 'normal)
+;;   (evil-mode))
 
 
 (use-package magit
@@ -379,7 +379,7 @@
   :hook ((LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . TeX-fold-mode))
   :config
-  (setq TeX-engine 'luatex)
+  (setq-default TeX-engine 'luatex)
   (setq TeX-parse-self t) ; Enable parse on load.
   (setq TeX-auto-save t) ; Enable parse on save.
   (setq-default TeX-master nil)
