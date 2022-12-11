@@ -49,6 +49,7 @@
       marginalia
       embark
       embark-consult
+      cape
     ];
 
     # extraConfig = ''
