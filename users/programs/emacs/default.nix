@@ -50,6 +50,7 @@
       embark
       embark-consult
       cape
+      expand-region
     ];
 
     # extraConfig = ''
