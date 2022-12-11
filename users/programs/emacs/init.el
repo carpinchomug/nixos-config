@@ -362,6 +362,13 @@
                '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
 
 
+(use-package yasnippet
+  :hook ((prog-mode text-mode) . yas-minor-mode))
+
+(use-package yasnippet-snippets
+  :after (yasnippet))
+
+
 (use-package julia-mode)
 
 

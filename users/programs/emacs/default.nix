@@ -26,6 +26,9 @@
       # lsp
       eglot
 
+      yasnippet
+      yasnippet-snippets
+
       # org-mode
       org
 
