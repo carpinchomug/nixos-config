@@ -25,6 +25,7 @@
 
       # lsp
       eglot
+      eglot-jl
 
       yasnippet
       yasnippet-snippets

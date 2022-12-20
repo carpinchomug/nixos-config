@@ -377,11 +377,15 @@
 
 ;; LSP client
 (use-package eglot
-  :hook ((nix-mode
+  :hook ((julia-mode
+          nix-mode
           rustic-mode
           python-mode
           LaTeX-mode bibtex-mode) . eglot-ensure)
+  :custom
+  (eglot-connect-timeout 60)
   :config
+  (eglot-jl-init)
   (add-to-list 'eglot-server-programs
                '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab"))))
 
