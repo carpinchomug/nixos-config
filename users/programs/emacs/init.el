@@ -336,7 +336,10 @@
 
 ;; Direnv
 (use-package direnv
+  :custom
+  (direnv-show-paths-in-summary nil)
   :config
+  (add-to-list 'warning-suppress-types '(direnv))
   (direnv-mode))
 
 

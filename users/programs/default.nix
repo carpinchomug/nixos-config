@@ -87,6 +87,7 @@ in
       scipy
       matplotlib
       ipython
+      ipykernel
       python-lsp-server
       pyls-isort
     ]))
