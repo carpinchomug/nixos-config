@@ -68,6 +68,7 @@ in
 
     # Jupyter
     jupyter
+    python3Packages.jupytext
 
     # Latex
     texlive.combined.scheme-full

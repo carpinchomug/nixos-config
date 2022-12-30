@@ -40,6 +40,7 @@
       magit
       pdf-tools
       jupyter
+      code-cells
       use-package
       which-key
       direnv
