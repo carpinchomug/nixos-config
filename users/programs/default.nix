@@ -36,6 +36,7 @@ in
     freecad
     kmonad-static
     zotero
+    pandoc
 
     gnumake
     just
