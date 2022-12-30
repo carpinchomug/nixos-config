@@ -251,6 +251,7 @@
   :config
   (vertico-mode))
 
+
 ;; Corfu
 (defun setup-corfu-for-eshell ()
   (setq-local corfu-auto nil)
@@ -306,6 +307,30 @@
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
+
+
+(use-package tempel
+  :init
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-complete
+                      completion-at-point-functions)))
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+)
 
 
 (use-package expand-region
@@ -375,8 +400,8 @@
 (use-package code-cells
   :hook ((julia-mode
           python-mode) . code-cells-mode-maybe)
-  :bind (("<down>" . code-cells-backward-cell)
-         ("<up>" . code-cells-forward-cell)
+  :bind (("<down>" . code-cells-forward-cell)
+         ("<up>" . code-cells-backward-cell)
          ("C-c C-c" . code-cells-eval)
          ([remap jupyter-eval-line-or-region] . code-cells-eval)))
 
@@ -401,36 +426,6 @@
 
 ;; (use-package yasnippet-snippets
 ;;   :after (yasnippet))
-
-
-;; Configure Tempel
-(use-package tempel
-  :init
-  ;; Setup completion at point
-  (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  ;; (global-tempel-abbrev-mode)
-)
-
-;; Optional: Add tempel-collection.
-;; The package is young and doesn't have comprehensive coverage.
-;; (use-package tempel-collection)
 
 
 (use-package julia-mode)

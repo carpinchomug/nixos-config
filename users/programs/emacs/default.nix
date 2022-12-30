@@ -64,5 +64,6 @@
   xdg.configFile = {
     "emacs/init.el".source = ./init.el;
     "emacs/eshell/alias".source = ./alias;
+    "emacs/templates".source = ./templates;
   };
 }

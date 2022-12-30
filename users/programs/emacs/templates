@@ -1,0 +1,18 @@
+
+fundamental-mode ;; Available everywhere
+
+(today (format-time-string "%Y-%m-%d"))
+
+julia-mode
+
+(code "# %%")
+(md "# %% [markdown]")
+
+python-mode
+
+(code "# %%")
+(md "# %% [markdown]")
+
+;; Local Variables:
+;; mode: lisp-data
+;; End:
