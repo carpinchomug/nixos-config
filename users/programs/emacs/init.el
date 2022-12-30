@@ -372,10 +372,10 @@
   :commands (jupyters-run-repl jupyter-run-server-repl))
 
 
-(use-package code-cells
-  :bind (("C-c C-c" . code-cells-eval)
-         ("M-f" . code-cells-forward-cell)
-         ("M-p" . code-cells-backward-cell)))
+(use-package code-cells)
+  ;; :bind (("C-c C-c" . code-cells-eval)
+  ;;        ("M-f" . code-cells-forward-cell)
+  ;;        ("M-p" . code-cells-backward-cell)))
 
 
 ;; LSP client
