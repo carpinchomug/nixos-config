@@ -52,7 +52,11 @@
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
-        extraSpecialArgs = { inherit emacs-overlay kmonad battery-notification; };
+        extraSpecialArgs = {
+          inherit emacs-overlay;
+          kmonad = kmonad.packages.${system}.default;
+          battery-notification = battery-notification.packages.${system}.default;
+        };
       };
 
       formatter.${system} = pkgs.nixpkgs-fmt;

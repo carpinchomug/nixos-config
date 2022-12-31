@@ -138,7 +138,7 @@ in
         }
         {
           command = ''
-            battery_notification
+            battery-notification
           '';
         }
         {

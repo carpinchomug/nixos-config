@@ -1,9 +1,5 @@
-{ pkgs, kmonad, ... }:
+{ pkgs, kmonad, battery-notification, ... }:
 
-let
-  kmonad-static = kmonad.packages.${pkgs.system}.default;
-
-in
 {
   imports = [
     ./emacs
@@ -34,9 +30,10 @@ in
     inkscape
     blender
     freecad
-    kmonad-static
     zotero
     pandoc
+    kmonad
+    battery-notification
 
     gnumake
     just

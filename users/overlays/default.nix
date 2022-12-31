@@ -1,11 +1,7 @@
-{ pkgs, emacs-overlay, battery-notification, ... }:
+{ emacs-overlay, ... }:
 
 {
   nixpkgs.overlays = [
-    emacs-overlay.overlay
-
-    (self: super: {
-      battery-notification = battery-notification.packages.${super.system}.default;
-    })
+    emacs-overlay.overlays.default
   ];
 }
