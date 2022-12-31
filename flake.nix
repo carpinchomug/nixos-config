@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
@@ -22,7 +22,15 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }:
+  outputs =
+    { nixpkgs
+    , nixos-hardware
+    , home-manager
+    , emacs-overlay
+    , kmonad
+    , battery-notification
+    , ...
+    }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -32,7 +40,7 @@
       nixosConfigurations.thinkpad = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [ ./system/configuration.nix ];
-        specialArgs = inputs;
+        specialArgs = { inherit nixos-hardware; };
       };
 
       homeConfigurations.akiyoshi = home-manager.lib.homeManagerConfiguration {
@@ -44,7 +52,7 @@
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
-        extraSpecialArgs = inputs;
+        extraSpecialArgs = { inherit emacs-overlay kmonad battery-notification; };
       };
 
       formatter.${system} = pkgs.nixpkgs-fmt;
