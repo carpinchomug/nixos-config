@@ -29,7 +29,6 @@
 
       yasnippet
       yasnippet-snippets
-      tempel
 
       # org-mode
       org
