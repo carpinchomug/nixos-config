@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1672511324,
-        "narHash": "sha256-MoUj5mGWNtDl04o4YoxZmOaP17O9eWA/o2kGLJQS+Og=",
+        "lastModified": 1672564278,
+        "narHash": "sha256-K7oAg8Y96rpwdfyW1BpAcJYkBaoGKYy1v84jB60Lg/U=",
         "owner": "carpinchomug",
         "repo": "battery-notification",
-        "rev": "1b2fab0b140671a46a60bc9f291744fc0a5fb4a7",
+        "rev": "5b6944827064d77698b6b237750df75114e453b5",
         "type": "github"
       },
       "original": {
