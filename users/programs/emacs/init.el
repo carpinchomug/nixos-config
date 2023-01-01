@@ -383,8 +383,11 @@
 (use-package code-cells
   :hook ((julia-mode
           python-mode) . code-cells-mode-maybe)
-  :bind (("<down>" . code-cells-forward-cell)
-         ("<up>" . code-cells-backward-cell)
+  :bind (;; Uncommenting the following will affect the global keybindings.
+         ;; I want to have these bindings available if and only if the code-cells mode is active,
+         ;; and I haven't figured out how that can be achieved.
+         ;; ("<down>" . code-cells-forward-cell)
+         ;; ("<up>" . code-cells-backward-cell)
          ("C-c C-c" . code-cells-eval)
          ([remap jupyter-eval-line-or-region] . code-cells-eval)))
 
