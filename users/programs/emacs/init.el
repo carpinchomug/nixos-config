@@ -395,6 +395,7 @@
 ;; LSP client
 (use-package eglot
   :hook ((julia-mode
+          lua-mode
           nix-mode
           rustic-mode
           python-mode

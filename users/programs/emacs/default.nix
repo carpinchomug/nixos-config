@@ -19,6 +19,7 @@
     extraPackages = epkgs: with epkgs; [
       # languages
       julia-mode
+      lua-mode
       nix-mode
       rustic
       auctex
