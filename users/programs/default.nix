@@ -72,10 +72,10 @@
     texlive.combined.scheme-full
     bibutils
     texlab
-    lua54Packages.digestif
+    lua53Packages.digestif
 
     # Lua
-    lua54Packages.lua
+    lua53Packages.lua
     sumneko-lua-language-server
 
     # Nix
