@@ -403,6 +403,8 @@
   (eglot-connect-timeout 60)
   :config
   (eglot-jl-init)
+  (add-to-list 'eglot-server-programs
+               '(lua-mode . ("lua-language-server"))
   ;; Uncomment below to use texlab instead of digestif
   ;; (add-to-list 'eglot-server-programs
   ;;              '((tex-mode context-mode texinfo-mode bibtex-mode) . ("texlab")))
