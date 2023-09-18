@@ -555,21 +555,25 @@
 ;;; Git
 (use-package magit
   :ensure t
+  :after diff-hl
   :bind ("C-x g" . magit-status)
-  :init
+  :config
   (setq magit-define-global-key-bindings nil)
   (setq transient-default-level 5))
+
+(use-package magit-extras
+  :after project)
 
 
 ;;; Diff highlight
 (use-package diff-hl
   :ensure t
-  :demand t
   :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)
          (dired-mode . diff-hl-dired-mode)
+         (conf-mode . diff-hl-margin-mode)
          (prog-mode . diff-hl-margin-mode)
-         (org-mode . diff-hl-margin-mode))
+         (text-mode . diff-hl-margin-mode))
   :config
   (global-diff-hl-mode))
 
