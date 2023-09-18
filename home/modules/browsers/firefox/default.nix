@@ -15,6 +15,7 @@
           "layers.acceleration.force-enabled" = true;
         };
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          bitwarden
           browserpass
           ublock-origin
           vimium
