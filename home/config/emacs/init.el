@@ -644,6 +644,12 @@
   :ensure t)
 
 
+;;;; Python
+(use-package python
+  :init
+  (setq python-indent-guess-indent-offset-verbose nil))
+
+
 ;;;; Rust
 (use-package rust-mode
   :ensure t
