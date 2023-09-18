@@ -1,0 +1,51 @@
+{
+  description = "My NixOS Configuration";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
+    };
+
+    nur.url = "github:nix-community/nur";
+
+    nix-colors.url = "github:misterio77/nix-colors";
+  };
+
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.flake-parts.flakeModules.easyOverlay
+        ./nixos
+        ./home
+        ./packages
+        ./overlays
+      ];
+
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+
+      perSystem = { pkgs, ... }: {
+        devShells = {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              nixd
+              nixpkgs-fmt
+            ];
+          };
+        };
+
+        formatter = pkgs.nixpkgs-fmt;
+      };
+    };
+}
