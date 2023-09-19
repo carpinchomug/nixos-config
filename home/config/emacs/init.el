@@ -528,7 +528,9 @@
 ;;; Expand region
 (use-package expand-region
   :ensure t
-  :bind ("C-=" . 'er/expand-region))
+  :bind ("C-=" . 'er/expand-region)
+  :init
+  (setq expand-region-smart-cursor t))
 
 
 ;;; Mozc
