@@ -639,6 +639,12 @@
 
 
 ;;; Language modes
+
+;;;; CMake
+(use-package cmake-mode
+  :ensure t)
+
+
 ;;;; Nix
 (use-package nix-mode
   :ensure t)
