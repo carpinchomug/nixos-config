@@ -9,14 +9,14 @@
         error_symbol = "[\\$](bold red)";
       };
       conda = {
-        format = "[$environment]($style)";
+        format = "[$environment]($style) ";
       };
       custom = {
         conda_shell = {
           when = "test -v CONDA_SHLVL";
           symbol = "🅒 ";
           style = "bold green";
-          format = "via [$symbol]($style) ";
+          format = "via [$symbol]($style)";
         };
       };
       format = lib.concatStrings [
