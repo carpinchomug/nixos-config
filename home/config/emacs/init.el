@@ -215,24 +215,25 @@
 ;;; Whitespace
 (use-package whitespace
   :init
-  (setq whitespace-style
-        '(face
-          space-mark
-          tab-mark
-          newline-mark)
-        whitespace-display-mappings
-        '((space-mark 32
-                      [183]
-                      [46])
-          (space-mark 160
-                      [9085]
-                      [95])
-          (newline-mark 10
-                        [9166 10]
-                        [36 10])
-          (tab-mark 9
-                    [8594 9]
-                    [92 9]))))
+  (setq
+   ;; whitespace-style
+   ;; '(face
+   ;;   space-mark
+   ;;   tab-mark
+   ;;   newline-mark)
+   whitespace-display-mappings
+   '((space-mark 32
+                 [183]
+                 [46])
+     (space-mark 160
+                 [9085]
+                 [95])
+     (newline-mark 10
+                   [9166 10]
+                   [36 10])
+     (tab-mark 9
+               [8594 9]
+               [92 9]))))
 
 
 ;;; Eldoc
