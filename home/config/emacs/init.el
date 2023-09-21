@@ -727,7 +727,10 @@
                                         . ,(eglot-alternatives '("nil" "nixd"))))
   (setq-default eglot-workspace-configuration
                 '(:nil (:formatting (:command ["nixpkgs-fmt"]))
-                  :nixd (:formatting (:command "nixpkgs-fmt")))))
+                  :nixd (:formatting (:command "nixpkgs-fmt"))
+                  :pylsp (:plugins (:black (:enabled t)
+                                    :flake8 (:enabled :json-false)
+                                    :yapf (:enabled :json-false))))))
 
 
 ;;; Envrc
