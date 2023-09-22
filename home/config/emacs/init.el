@@ -602,6 +602,7 @@
   (setq org-startup-with-inline-images t
         org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))
         org-agenda-files '("~/org"))
+  (add-hook 'org-mode-hook (lambda () (setq cursor-type 'bar)))
   :config
   (add-to-list 'org-modules 'org-tempo t)
   (org-babel-do-load-languages
