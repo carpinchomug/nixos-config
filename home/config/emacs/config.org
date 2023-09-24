@@ -495,7 +495,8 @@ Load a theme.
 
 ** ~nix-mode~
 #+begin_src emacs-lisp
-  (use-package nix-mode)
+  (use-package nix-mode
+    :mode "\\.nix\\'")
 #+end_src
 
 ** ~olivetti~
@@ -592,6 +593,7 @@ Load a theme.
 ** ~python~
 #+begin_src emacs-lisp
   (use-package python
+    :mode "\\.py[iw]?\\'"
     :init
     (setq python-indent-guess-indent-offset-verbose nil))
 #+end_src
@@ -606,6 +608,7 @@ Load a theme.
 ** ~rust-mode~
 #+begin_src emacs-lisp
   (use-package rust-mode
+    :mode "\\.rs\\'"
     :init
     (setq rust-format-on-save t))
 #+end_src
@@ -613,6 +616,7 @@ Load a theme.
 ** ~rust-ts-mode~
 #+begin_src emacs-lisp
   (use-package rust-ts-mode
+    :mode "\\.rs\\'"
     :init
     (setq rust-ts-mode-hook rust-mode-hook))
 #+end_src
