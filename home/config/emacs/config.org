@@ -1,0 +1,741 @@
+#+TITLE: My Emacs Configuration
+#+PROPERTY: header-args :tangle (expand-file-name "emacs/init.el" (getenv "XDG_CONFIG_HOME"))
+
+* Start up
+Load ~use-package~.
+#+begin_src emacs-lisp
+  (eval-when-compile
+    (require 'use-package))
+
+  (require 'bind-key)
+#+end_src
+
+Eagerly load packages with ~use-package~ when emacs is  started as a daemon.
+#+begin_src emacs-lisp
+   (when (daemonp)
+     (setq use-package-always-demand t))
+#+end_src
+
+* General configuration
+Make sure emacs will find the right user directory set up by ~home-manager~.
+#+begin_src emacs-lisp
+  (setq user-emacs-directory (expand-file-name "emacs" (getenv "XDG_CONFIG_HOME")))
+#+end_src
+
+Store backup and auto-save files in dedicated directories under ~user-emacs-directory~.
+#+begin_src emacs-lisp
+  (let ((backup-dir (expand-file-name "backup" user-emacs-directory))
+        (auto-save-dir (expand-file-name "auto-save" user-emacs-directory)))
+    (dolist (dir (list backup-dir auto-save-dir))
+      (make-directory dir t)
+      (setq backup-directory-alist `((".*" . ,backup-dir))
+            auto-save-file-name-transforms `((".*" ,auto-save-dir t)))))
+#+end_src
+
+Write custom information ot ~custom-file~ in ~user-emacs-directory~.
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "custom-file.el" user-emacs-directory))
+  (load custom-file t)
+#+end_src
+
+Modify scrolling behaviour to imitate that of ~helix~.
+- ~scroll-margin~
+  Sets the number of lines that triggers scrolling whenever point gets within.
+- ~scroll-preserver-screen-position~
+  Controls whether scroll commands move point to keep its screen position unchanged.
+- ~scroll-conservatively~
+  Settings this to a large number prevents automatic recentering of point.
+#+begin_src emacs-lisp
+  (setq scroll-margin 5
+        scroll-preserve-screen-position t
+        scroll-conservatively 100)
+#+end_src
+
+Replace the "yes or no" prompt with "y or n".
+#+begin_src emacs-lisp
+  (setq use-short-answers t)
+#+end_src
+
+Set default tab width 2-column wide.
+#+begin_src emacs-lisp
+  (setq-default tab-width 2)
+#+end_src
+
+Insert spaces for indentation
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+Append a newline character at the end of the file on save
+#+begin_src emacs-lisp
+  (setq require-final-newline t)
+  #+end_src
+
+Remove visual clutters.
+#+begin_src emacs-lisp
+  (tool-bar-mode -1)
+  (blink-cursor-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (setq ring-bell-function 'ignore)
+  #+end_src
+
+Set up fonts.
+#+begin_src emacs-lisp
+  (defun my/setup-fonts ()
+    (set-fontset-font t
+                      'japanese-jisx0213.2004-1
+                      "Sarasa Mono J")
+    (set-fontset-font "fontset-standard"
+                      nil
+                      "Iosevka Aile")
+    (set-fontset-font "fontset-standard"
+                      'japanese-jisx0213.2004-1
+                      "Sarasa UI J")
+    (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
+    (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
+    (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
+
+  (if (daemonp)
+      (add-hook 'server-after-make-frame-hook
+                (lambda () (my/setup-fonts)))
+    (my/setup-fonts))
+  #+end_src
+
+Load a theme.
+  #+begin_src emacs-lisp
+    (use-package modus-themes
+      :config
+      (setq modus-themes-mixed-fonts t)
+      (setq modus-operandi-palette-overrides '((fringe unspecified)
+                                               (bg-line-number-inactive upspecified)
+                                               (bg-line-number-active unspecified)))
+      (load-theme 'modus-operandi t))
+#+end_src
+
+* Packages
+** ~ace-window~
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :bind ("C-x o" . 'ace-window)
+    :init
+    (setq aw-background nil))
+#+end_src
+
+** ~avy~
+#+begin_src emacs-lisp
+  (use-package avy)
+#+end_src
+
+** ~beacon~
+#+begin_src emacs-lisp
+  (use-package beacon
+    :config
+    (add-to-list 'beacon-dont-blink-major-modes 'dashboard-mode)
+    (add-to-list 'beacon-dont-blink-major-modes 'comint-mode)
+    (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode)
+    (add-to-list 'beacon-dont-blink-major-modes 'eat-mode)
+    (beacon-mode))
+#+end_src
+
+** ~cape~
+#+begin_src emacs-lisp
+  (use-package cape
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-elisp-block))
+#+end_src
+
+** ~cmake-mod~
+#+begin_src emacs-lisp
+  (use-package cmake-mode)
+#+end_src
+
+** ~consult~
+#+begin_src emacs-lisp
+  (use-package consult
+    :bind (;; C-c bindings in `mode-specific-map'
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    :init
+    (setq consult-narrow-key "<"
+          consult-project-function #'consult--default-project-function)
+
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any)))
+#+end_src
+
+** ~corfu~
+#+begin_src emacs-lisp
+  (use-package corfu
+    :preface
+    (defun corfu-send-shell (&rest _)
+      "Send completion candidate when inside comint/eshell."
+      (cond
+       ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
+        (eshell-send-input))
+       ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
+        (comint-send-input))))
+    :hook (eshell-mode . (lambda ()
+                           (setq corfu-auto nil)
+                           (corfu-mode)))
+    :init
+    (setq corfu-auto t
+          corfu-cycle t
+          corfu-quit-no-match 'separator)
+    :config
+    ;; Enable indentation+completion using the TAB key.
+    (setq tab-always-indent 'complete)
+    ;; Tab cycle if there are only few candidates
+    (setq completion-cycle-threshold 3)
+    (advice-add #'corfu-insert :after #'corfu-send-shell)
+    (global-corfu-mode))
+#+end_src
+
+** ~dashboard~
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :hook (dashboard-mode . (lambda () (setq mode-line-format nil)))
+    :init
+    (setq dashboard-center-content t
+          dashboard-set-footer nil
+          dashboard-set-init-info nil
+          dashboard-projects-backend 'project-el
+          dashboard-items '((recents . 5)
+                            (bookmarks . 5)
+                            (projects . 5)
+                            (agenda . 5)))
+
+    ;; Show a dashboard in emacsclient.
+    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+    (dashboard-setup-startup-hook))
+#+end_src
+
+** ~diff-hl~
+#+begin_src emacs-lisp
+  (use-package diff-hl
+    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+           (magit-post-refresh . diff-hl-magit-post-refresh)
+           (dired-mode . diff-hl-dired-mode)
+           (conf-mode . diff-hl-margin-mode)
+           (prog-mode . diff-hl-margin-mode)
+           (text-mode . diff-hl-margin-mode))
+    :config
+    (global-diff-hl-mode))
+#+end_src
+
+** ~dired~
+#+begin_src emacs-lisp
+  (use-package dired
+    :init
+    (setq dired-kill-when-opening-new-dired-buffer t))
+#+end_src
+
+** ~display-line-number~
+#+begin_src emacs-lisp
+  (use-package display-line-numbers
+    :hook ((conf-mode . display-line-numbers-mode)
+           (prog-mode . display-line-numbers-mode))
+    :init
+    (setq display-line-numbers-type 'relative
+          display-line-numbers-current-absolute t
+          display-line-numbers-grow-only t))
+#+end_src
+
+** ~eat~
+#+begin_src emacs-lisp
+  (use-package eat
+    :hook (eshell-load . eat-eshell-mode))
+#+end_src
+
+** ~eglot~
+#+begin_src emacs-lisp
+  (use-package eglot
+    :hook ((bash-ts-mode
+            c-mode c-ts-mode
+            c++-mode c++-ts-mode
+            js-mode js-ts-mode typescript-ts-mode tsx-ts-mode
+            nix-mode nix-ts-mode
+            python-mode python-ts-mode
+            rust-mode rust-ts-mode)
+           . eglot-ensure)
+    :init
+    (setq eglot-autoshutdown t)
+    (setq-default eglot-workspace-configuration
+                  '(:nil (:formatting (:command ["nixpkgs-fmt"]))
+                    :nixd (:formatting (:command "nixpkgs-fmt"))))
+    :config
+    (add-to-list 'eglot-server-programs `((nix-mode nix-ts-mode)
+                                          . ,(eglot-alternatives '("nil" "nixd")))))
+#+end_src
+
+** ~eldoc~
+#+begin_src emacs-lisp
+  (use-package eldoc
+    :init
+    (setq eldoc-echo-area-prefer-doc-buffer t))
+#+end_src
+
+** ~elec-pair~
+#+begin_src emacs-lisp
+  (use-package elec-pair
+    :hook ((conf-mode . electric-pair-mode)
+           (prog-mode . electric-pair-mode)))
+#+end_src
+
+** ~embark~
+#+begin_src emacs-lisp
+  (use-package embark
+    :bind
+    (("C-." . embark-act)
+     ("C-;" . embark-dwim)
+     ("C-h B" . embark-bindings))
+    :init
+    ;; Optionally replace the key help with a completing-read interface
+    (setq prefix-help-command #'embark-prefix-help-command)
+    ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+    ;; strategy, if you want to see the documentation from multiple providers.
+    (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+    ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+    :config
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
+#+end_src
+
+** ~embark-consult~
+#+begin_src emacs-lisp
+  (use-package embark-consult
+    :hook (embark-collect-mode . consult-preview-at-point-mode))
+#+end_src
+
+** ~envrc~
+#+begin_src emacs-lisp
+  (use-package envrc
+    :demand t
+    :bind-keymap
+    ("C-c e" . envrc-command-map)
+    :config
+    (envrc-global-mode))
+#+end_src
+
+** ~epg~
+#+begin_src emacs-lisp
+  (use-package epg
+    :init
+    (setq epg-pinentry-mode 'loopback))
+#+end_src
+
+** ~exec-path-from-shell~
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :if (daemonp)
+    :config
+    (exec-path-from-shell-initialize))
+#+end_src
+
+** ~expand-region~
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+end_src
+
+** ~helpful~
+#+begin_src emacs-lisp
+  (use-package helpful
+    :bind (("C-h f" . helpful-callable)
+           ("C-h v" . helpful-variable)
+           ("C-h k" . helpful-key)
+           ("C-h x" . helpful-command)
+           ("C-c C-d" . helpful-at-point)
+           ("C-h F" . helpful-function)))
+#+end_src
+
+** ~hydra~
+#+begin_src emacs-lisp
+  (use-package hydra)
+#+end_src
+
+** ~ligature~
+#+begin_src emacs-lisp
+  (use-package ligature
+    :config
+    (ligature-set-ligatures
+     '(conf-mode prog-mode text-mode)
+     '("<--" "<---" "<<-" "<-" "->" "->>" "-->" "--->"
+       "<==" "<===" "<<=" "<=" "=>" "=>>" "==>" "===>" ">=" ">>="
+       "<->" "<-->" "<--->" "<---->" "<=>" "<==>" "<===>" "<====>" "::" ":::" "__"
+       "<~~" "</" "</>" "/>" "~~>" "==" "!=" "<>" "===" "!==" "!==="
+       "<:" ":=" "*=" "*+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+*" "=*" "=:" ":>"
+       "/*" "*/" "[|" "|]" "++" "+++" "<!--" "<!---" ))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode))
+#+end_src
+
+** ~magit~
+#+begin_src emacs-lisp
+  (use-package magit
+    :after diff-hl
+    :bind ("C-x g" . magit-status)
+    :init
+    (setq magit-define-global-key-bindings nil)
+    (setq transient-default-level 5))
+#+end_src
+
+** ~magit-extras~
+#+begin_src emacs-lisp
+  (use-package magit-extras
+    :after project)
+#+end_src
+
+** ~marginalia~
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :config
+    (marginalia-mode))
+#+end_src
+
+** ~mozc~
+#+begin_src emacs-lisp
+  (use-package mozc
+    :commands toggle-input-method
+    :init
+    (setq default-input-method "japanese-mozc")
+    (prefer-coding-system 'utf-8))
+#+end_src
+
+** ~nerd-icons~
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :init
+    (setq nerd-icons-font-family "Iosevka Nerd Font"))
+#+end_src
+
+** ~nix-mode~
+#+begin_src emacs-lisp
+  (use-package nix-mode)
+#+end_src
+
+** ~olivetti~
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :hook (org-mode . olivetti-mode))
+#+end_src
+
+** ~orderless~
+#+begin_src emacs-lisp
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles . (partial-completion))))))
+#+end_src
+
+** ~org~
+#+begin_src emacs-lisp
+  (use-package org
+    :ensure t
+    :bind (("C-c l" . org-store-link)
+           ("C-c a" . org-agenda)
+           ("C-c c" . org-capture))
+    :init
+    (setq org-startup-with-inline-images t
+          org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))
+          org-agenda-files '("~/org")
+
+          ;; Edit settings
+          org-auto-align-tags nil
+          org-tags-column 0
+          org-catch-invisible-edits 'show-and-error
+          org-special-ctrl-a/e t
+          org-insert-heading-respect-content t
+
+          ;; Org styling, hide markup etc.
+          org-hide-emphasis-markers t
+          org-pretty-entities t
+          ;; Agenda styling
+          org-agenda-tags-column 0
+          org-agenda-block-separator ?-
+          org-agenda-time-grid
+          '((daily today require-timed)
+            (800 1000 1200 1400 1600 1800 2000)
+            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t))))
+#+end_src
+
+** ~org-appear~
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode)
+    :init
+    (setq org-appear-autoemphasis t
+          org-appear-autoentities t
+          org-appear-autolinks t))
+#+end_src
+
+** ~org-modern~
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :config
+    (global-org-modern-mode))
+#+end_src
+
+** ~paren~
+#+begin_src emacs-lisp
+  (use-package paren
+    :hook ((conf-mode . show-paren-mode)
+           (prog-mode . show-paren-mode))
+    :init
+    (setq show-paren-context-when-offscreen t))
+#+end_src
+
+** ~pixel-scroll~
+#+begin_src emacs-lisp
+  (use-package pixel-scroll
+    :config
+    (pixel-scroll-precision-mode))
+#+end_src
+
+** ~project~
+#+begin_src emacs-lisp
+  (use-package project
+    :init
+    (setq project-vc-extra-root-markers '(".dir-locals.el" "flake.nix")))
+#+end_src
+
+** ~python~
+#+begin_src emacs-lisp
+  (use-package python
+    :init
+    (setq python-indent-guess-indent-offset-verbose nil))
+#+end_src
+
+** ~recentf~
+#+begin_src emacs-lisp
+  (use-package recentf
+    :config
+    (recentf-mode))
+#+end_src
+
+** ~rust-mode~
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :init
+    (setq rust-format-on-save t))
+#+end_src
+
+** ~rust-ts-mode~
+#+begin_src emacs-lisp
+  (use-package rust-ts-mode
+    :init
+    (setq rust-ts-mode-hook rust-mode-hook))
+#+end_src
+
+** ~savehist~
+#+begin_src emacs-lisp
+  (use-package savehist
+    :config
+    (savehist-mode))
+#+end_src
+
+** ~spacious-padding~
+#+begin_src emacs-lisp
+  (use-package spacious-padding
+    :config
+    (if (daemonp)
+        (add-hook 'server-after-make-frame-hook
+                  (lambda () (spacious-padding-mode)))
+      (spacious-padding-mode)))
+#+end_src
+
+** ~tempel~
+#+begin_src emacs-lisp
+  (use-package tempel
+    :after cape
+    :preface
+    ;; Setup completion at point
+    (defun tempel-setup-capf ()
+      ;; Add the Tempel Capf to `completion-at-point-functions'.
+      ;; `tempel-expand' only triggers on exact matches. Alternatively use
+      ;; `tempel-complete' if you want to see all matches, but then you
+      ;; should also configure `tempel-trigger-prefix', such that Tempel
+      ;; does not trigger too often when you don't expect it. NOTE: We add
+      ;; `tempel-expand' *before* the main programming mode Capf, such
+      ;; that it will be tried first.
+      (setq-local completion-at-point-functions
+                  (cons #'tempel-expand
+                        completion-at-point-functions)))
+    :hook ((conf-mode . tempel-setup-capf)
+           (prog-mode . tempel-setup-capf)
+           (text-mode . tempel-setup-capf))
+    :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+           ("M-*" . tempel-insert))
+    :init
+    ;; Require trigger prefix before template name when completing.
+    ;; (tempel-trigger-prefix "<")
+    (setq tempel-path (expand-file-name "templates/*.eld" user-emacs-directory)))
+#+end_src
+
+** ~tex~
+#+begin_src emacs-lisp
+  (use-package tex
+    :ensure auctex
+    :hook ((LaTeX-mode . LaTeX-math-mode)
+           (LaTeX-mode . TeX-fold-mode))
+    :init
+    (setq-default TeX-engine 'luatex)
+    (setq TeX-parse-self t
+          TeX-auto-save t
+          TeX-view-program-selection '((output-pdf "PDF Tools")))
+    (setq LaTeX-electric-left-right-brace t))
+#+end_src
+
+** ~treesit-auto~
+#+begin_src emacs-lisp
+  (use-package treesit-auto
+    :init
+    (setq treesit-auto-install nil)
+    :config
+    (global-treesit-auto-mode))
+#+end_src
+
+** ~vertico~
+#+begin_src emacs-lisp
+  (use-package vertico
+    :init
+    (setq vertico-cycle t)
+    :config
+    (vertico-mode))
+#+end_src
+
+** ~web-mode~
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.phtml\\'"
+           "\\.tpl\\.php\\'"
+           "\\.tpl\\'"
+           "\\.hbs\\'"
+           "\\.blade\\.php\\'"
+           "\\.jsp\\'"
+           "\\.as[cp]x\\'"
+           "\\.erb\\'"
+           "\\.html?\\'"
+           "/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'"))
+#+end_src
+
+** ~which-key~
+#+begin_src emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-mode))
+#+end_src
+
+** ~whitespace~
+#+begin_src emacs-lisp
+  (use-package whitespace
+    :init
+    (setq whitespace-display-mappings '((space-mark 32
+                                                    [183]
+                                                    [46])
+                                        (space-mark 160
+                                                    [9085]
+                                                    [95])
+                                        (newline-mark 10
+                                                      [9166 10]
+                                                      [36 10])
+                                        (tab-mark 9
+                                                  [8594 9]
+                                                  [92 9]))))
+#+end_src
+
+** ~yuck-mode~
+#+begin_src emacs-lisp
+  (use-package yuck-mode)
+#+end_src

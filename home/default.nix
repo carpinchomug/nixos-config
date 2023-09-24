@@ -40,7 +40,6 @@ let
     nixpkgs.config.allowUnfree = true;
     nixpkgs.overlays = [
       config.flake.overlays.default
-      inputs.emacs-overlay.overlays.default
       inputs.nur.overlay
     ];
   };
