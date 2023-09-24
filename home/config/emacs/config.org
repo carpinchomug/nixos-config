@@ -97,9 +97,8 @@ Set up fonts.
     (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
 
   (if (daemonp)
-      (add-hook 'server-after-make-frame-hook
-                (lambda () (my/setup-fonts)))
-    (my/setup-fonts))
+      (add-hook 'server-after-make-frame-hook (lambda () (my/setup-fonts)))
+    (when (display-graphic-p) (my/setup-fonts)))
   #+end_src
 
 Load a theme.
@@ -118,8 +117,8 @@ Load a theme.
 #+begin_src emacs-lisp
   (use-package ace-window
     :bind ("C-x o" . 'ace-window)
-    :init
-    (setq aw-background nil))
+    :custom
+    (aw-background nil))
 #+end_src
 
 ** ~avy~
@@ -146,9 +145,10 @@ Load a theme.
     (add-to-list 'completion-at-point-functions #'cape-elisp-block))
 #+end_src
 
-** ~cmake-mod~
+** ~cmake-mode~
 #+begin_src emacs-lisp
-  (use-package cmake-mode)
+  (use-package cmake-mode
+    :mode "\\.cmake\\'")
 #+end_src
 
 ** ~consult~
@@ -210,10 +210,11 @@ Load a theme.
     ;; relevant when you use the default completion UI.
     :hook (completion-list-mode . consult-preview-at-point-mode)
 
+    :custom
+    (consult-narrow-key "<")
+    (consult-project-function #'consult--default-project-function)
+    
     :init
-    (setq consult-narrow-key "<"
-          consult-project-function #'consult--default-project-function)
-
     ;; Optionally configure the register formatting. This improves the register
     ;; preview for `consult-register', `consult-register-load',
     ;; `consult-register-store' and the Emacs built-ins.
@@ -254,13 +255,14 @@ Load a theme.
         (eshell-send-input))
        ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
         (comint-send-input))))
-    :hook (eshell-mode . (lambda ()
-                           (setq corfu-auto nil)
-                           (corfu-mode)))
+    :custom
+    (corfu-auto t)
+    (corfu-cycle t)
+    (corfu-quit-no-match 'separator)
     :init
-    (setq corfu-auto t
-          corfu-cycle t
-          corfu-quit-no-match 'separator)
+    (add-hook 'eshell-mode-hook (lambda ()
+                                  (setq corfu-auto nil)
+                                  (corfu-mode)))
     :config
     ;; Enable indentation+completion using the TAB key.
     (setq tab-always-indent 'complete)
@@ -273,20 +275,20 @@ Load a theme.
 ** ~dashboard~
 #+begin_src emacs-lisp
   (use-package dashboard
-    :hook (dashboard-mode . (lambda () (setq mode-line-format nil)))
+    :custom
+    (dashboard-center-content t)
+    (dashboard-set-footer nil)
+    (dashboard-set-init-info nil)
+    (dashboard-projects-backend 'project-el)
+    (dashboard-items '((recents . 5)
+                       (bookmarks . 5)
+                       (projects . 5)
+                       (agenda . 5)))
     :init
-    (setq dashboard-center-content t
-          dashboard-set-footer nil
-          dashboard-set-init-info nil
-          dashboard-projects-backend 'project-el
-          dashboard-items '((recents . 5)
-                            (bookmarks . 5)
-                            (projects . 5)
-                            (agenda . 5)))
-
     ;; Show a dashboard in emacsclient.
     (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-
+    (add-hook 'dashboard-mode-hook (lambda () (setq mode-line-format nil)))
+    :config
     (dashboard-setup-startup-hook))
 #+end_src
 
@@ -296,9 +298,9 @@ Load a theme.
     :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
            (magit-post-refresh . diff-hl-magit-post-refresh)
            (dired-mode . diff-hl-dired-mode)
-           (conf-mode . diff-hl-margin-mode)
-           (prog-mode . diff-hl-margin-mode)
-           (text-mode . diff-hl-margin-mode))
+           (conf-mode . diff-hl-mode)
+           (prog-mode . diff-hl-mode)
+           (text-mode . diff-hl-mode))
     :config
     (global-diff-hl-mode))
 #+end_src
@@ -306,19 +308,20 @@ Load a theme.
 ** ~dired~
 #+begin_src emacs-lisp
   (use-package dired
-    :init
-    (setq dired-kill-when-opening-new-dired-buffer t))
+    :custom
+    (dired-kill-when-opening-new-dired-buffer t))
 #+end_src
 
 ** ~display-line-number~
 #+begin_src emacs-lisp
   (use-package display-line-numbers
     :hook ((conf-mode . display-line-numbers-mode)
-           (prog-mode . display-line-numbers-mode))
-    :init
-    (setq display-line-numbers-type 'relative
-          display-line-numbers-current-absolute t
-          display-line-numbers-grow-only t))
+           (prog-mode . display-line-numbers-mode)
+           (text-mode . display-line-numbers-mode))
+    :custom
+    (display-line-numbers-type 'relative)
+    (display-line-numbers-current-absolute t)
+    (display-line-numbers-grow-only t))
 #+end_src
 
 ** ~eat~
@@ -330,29 +333,26 @@ Load a theme.
 ** ~eglot~
 #+begin_src emacs-lisp
   (use-package eglot
-    :hook ((bash-ts-mode
-            c-mode c-ts-mode
-            c++-mode c++-ts-mode
-            js-mode js-ts-mode typescript-ts-mode tsx-ts-mode
-            nix-mode nix-ts-mode
-            python-mode python-ts-mode
-            rust-mode rust-ts-mode)
-           . eglot-ensure)
-    :init
-    (setq eglot-autoshutdown t)
-    (setq-default eglot-workspace-configuration
-                  '(:nil (:formatting (:command ["nixpkgs-fmt"]))
-                    :nixd (:formatting (:command "nixpkgs-fmt"))))
+    :hook ((bash-ts-mode . eglot-ensure)
+           ((c-mode c-ts-mode c++-mode c++-ts-mode) . eglot-ensure)
+           ((js-mode js-ts-mode typescript-ts-mode tsx-ts-mode) . eglot-ensure)
+           (nix-mode . eglot-ensure)
+           ((python-mode python-ts-mode) . eglot-ensure)
+           ((rust-mode rust-ts-mode) . eglot-ensure))
+    :custom
+    (eglot-autoshutdown t)
+    (eglot-workspace-configuration '(:nil (:formatting (:command ["nixpkgs-fmt"]))
+                                     :nixd (:formatting (:command "nixpkgs-fmt"))))
     :config
-    (add-to-list 'eglot-server-programs `((nix-mode nix-ts-mode)
+    (add-to-list 'eglot-server-programs `(nix-mode
                                           . ,(eglot-alternatives '("nil" "nixd")))))
 #+end_src
 
 ** ~eldoc~
 #+begin_src emacs-lisp
   (use-package eldoc
-    :init
-    (setq eldoc-echo-area-prefer-doc-buffer t))
+    :custom
+    (eldoc-echo-area-prefer-doc-buffer t))
 #+end_src
 
 ** ~elec-pair~
@@ -387,7 +387,8 @@ Load a theme.
 ** ~embark-consult~
 #+begin_src emacs-lisp
   (use-package embark-consult
-    :hook (embark-collect-mode . consult-preview-at-point-mode))
+    :init
+    (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))
 #+end_src
 
 ** ~envrc~
@@ -403,8 +404,8 @@ Load a theme.
 ** ~epg~
 #+begin_src emacs-lisp
   (use-package epg
-    :init
-    (setq epg-pinentry-mode 'loopback))
+    :custom
+    (epg-pinentry-mode 'loopback))
 #+end_src
 
 ** ~exec-path-from-shell~
@@ -459,8 +460,9 @@ Load a theme.
   (use-package magit
     :after diff-hl
     :bind ("C-x g" . magit-status)
+    :custom
+    (magit-define-global-key-bindings nil)
     :init
-    (setq magit-define-global-key-bindings nil)
     (setq transient-default-level 5))
 #+end_src
 
@@ -489,29 +491,31 @@ Load a theme.
 ** ~nerd-icons~
 #+begin_src emacs-lisp
   (use-package nerd-icons
-    :init
-    (setq nerd-icons-font-family "Iosevka Nerd Font"))
+    :custom
+    (nerd-icons-font-family "Iosevka Nerd Font"))
 #+end_src
 
 ** ~nix-mode~
 #+begin_src emacs-lisp
   (use-package nix-mode
-    :mode "\\.nix\\'")
+    :mode ("\\.nix\\'" . nix-mode))
 #+end_src
 
 ** ~olivetti~
 #+begin_src emacs-lisp
   (use-package olivetti
-    :hook (org-mode . olivetti-mode))
+      :commands olivetti-mode
+      :init
+      (add-hook 'olivetti-mode-hook (lambda () (diff-hl-mode))))
 #+end_src
 
 ** ~orderless~
 #+begin_src emacs-lisp
   (use-package orderless
-    :init
-    (setq completion-styles '(orderless basic)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles . (partial-completion))))))
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles . (partial-completion))))))
 #+end_src
 
 ** ~org~
@@ -521,28 +525,27 @@ Load a theme.
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
            ("C-c c" . org-capture))
-    :init
-    (setq org-startup-with-inline-images t
-          org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED"))
-          org-agenda-files '("~/org")
+    :custom
+    (org-startup-with-inline-images t)
+    (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+    (org-agenda-files '("~/org"))
 
           ;; Edit settings
-          org-auto-align-tags nil
-          org-tags-column 0
-          org-catch-invisible-edits 'show-and-error
-          org-special-ctrl-a/e t
-          org-insert-heading-respect-content t
+    (org-auto-align-tags nil)
+    (org-tags-column 0)
+    (org-catch-invisible-edits 'show-and-error)
+    (org-special-ctrl-a/e t)
+    (org-insert-heading-respect-content t)
 
           ;; Org styling, hide markup etc.
-          org-hide-emphasis-markers t
-          org-pretty-entities t
+    (org-hide-emphasis-markers t)
+    (org-pretty-entities t)
           ;; Agenda styling
-          org-agenda-tags-column 0
-          org-agenda-block-separator ?-
-          org-agenda-time-grid
-          '((daily today require-timed)
-            (800 1000 1200 1400 1600 1800 2000)
-            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+    (org-agenda-tags-column 0)
+    (org-agenda-block-separator ?-)
+    (org-agenda-time-grid '((daily today require-timed)
+                            (800 1000 1200 1400 1600 1800 2000)
+                            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
     :config
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -554,26 +557,28 @@ Load a theme.
 #+begin_src emacs-lisp
   (use-package org-appear
     :hook (org-mode . org-appear-mode)
-    :init
-    (setq org-appear-autoemphasis t
-          org-appear-autoentities t
-          org-appear-autolinks t))
+    :custom
+    (org-appear-autoemphasis t)
+    (org-appear-autoentities t)
+    (org-appear-autolinks t))
 #+end_src
 
 ** ~org-modern~
 #+begin_src emacs-lisp
   (use-package org-modern
-    :config
-    (global-org-modern-mode))
+    :hook (org-mode . org-modern-mode)
+    :init
+    (add-hook 'org-modern-mode-hook (lambda () (display-line-numbers-mode -1))))
 #+end_src
 
 ** ~paren~
 #+begin_src emacs-lisp
-  (use-package paren
-    :hook ((conf-mode . show-paren-mode)
-           (prog-mode . show-paren-mode))
-    :init
-    (setq show-paren-context-when-offscreen t))
+    (use-package paren
+      :hook ((conf-mode . show-paren-mode)
+             (prog-mode . show-paren-mode)
+             (text-mode . show-paren-mode))
+      :init
+      (setq show-paren-context-when-offscreen t))
 #+end_src
 
 ** ~pixel-scroll~
@@ -586,16 +591,16 @@ Load a theme.
 ** ~project~
 #+begin_src emacs-lisp
   (use-package project
-    :init
-    (setq project-vc-extra-root-markers '(".dir-locals.el" "flake.nix")))
+    :custom
+    (project-vc-extra-root-markers '(".dir-locals.el" "flake.nix")))
 #+end_src
 
 ** ~python~
 #+begin_src emacs-lisp
   (use-package python
-    :mode "\\.py[iw]?\\'"
-    :init
-    (setq python-indent-guess-indent-offset-verbose nil))
+    :mode ("\\.py[iw]?\\'" . python-mode)
+    :custom
+    (python-indent-guess-indent-offset-verbose nil))
 #+end_src
 
 ** ~recentf~
@@ -608,17 +613,17 @@ Load a theme.
 ** ~rust-mode~
 #+begin_src emacs-lisp
   (use-package rust-mode
-    :mode "\\.rs\\'"
-    :init
-    (setq rust-format-on-save t))
+    :mode ("\\.rs\\'" . rust-mode)
+    :custom
+    (rust-format-on-save t))
 #+end_src
 
 ** ~rust-ts-mode~
 #+begin_src emacs-lisp
   (use-package rust-ts-mode
-    :mode "\\.rs\\'"
-    :init
-    (setq rust-ts-mode-hook rust-mode-hook))
+    :mode ("\\.rs\\'" . rust-ts-mode)
+    :custom
+    (rust-ts-mode-hook rust-mode-hook))
 #+end_src
 
 ** ~savehist~
@@ -633,9 +638,9 @@ Load a theme.
   (use-package spacious-padding
     :config
     (if (daemonp)
-        (add-hook 'server-after-make-frame-hook
-                  (lambda () (spacious-padding-mode)))
-      (spacious-padding-mode)))
+        (add-hook 'server-after-make-frame-hook #'spacious-padding-mode)
+      (when (display-graphic-p)
+        (spacious-padding-mode))))
 #+end_src
 
 ** ~tempel~
@@ -660,10 +665,10 @@ Load a theme.
            (text-mode . tempel-setup-capf))
     :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
            ("M-*" . tempel-insert))
-    :init
+    :custom
     ;; Require trigger prefix before template name when completing.
     ;; (tempel-trigger-prefix "<")
-    (setq tempel-path (expand-file-name "templates/*.eld" user-emacs-directory)))
+    (tempel-path (expand-file-name "templates/*.eld" user-emacs-directory)))
 #+end_src
 
 ** ~tex~
@@ -683,8 +688,8 @@ Load a theme.
 ** ~treesit-auto~
 #+begin_src emacs-lisp
   (use-package treesit-auto
-    :init
-    (setq treesit-auto-install nil)
+    :custom
+    (treesit-auto-install nil)
     :config
     (global-treesit-auto-mode))
 #+end_src
@@ -692,8 +697,8 @@ Load a theme.
 ** ~vertico~
 #+begin_src emacs-lisp
   (use-package vertico
-    :init
-    (setq vertico-cycle t)
+    :custom
+    (vertico-cycle t)
     :config
     (vertico-mode))
 #+end_src
@@ -724,22 +729,23 @@ Load a theme.
 ** ~whitespace~
 #+begin_src emacs-lisp
   (use-package whitespace
-    :init
-    (setq whitespace-display-mappings '((space-mark 32
-                                                    [183]
-                                                    [46])
-                                        (space-mark 160
-                                                    [9085]
-                                                    [95])
-                                        (newline-mark 10
-                                                      [9166 10]
-                                                      [36 10])
-                                        (tab-mark 9
-                                                  [8594 9]
-                                                  [92 9]))))
+    :custom
+    (whitespace-display-mappings '((space-mark 32
+                                               [183]
+                                               [46])
+                                   (space-mark 160
+                                               [9085]
+                                               [95])
+                                   (newline-mark 10
+                                                 [9166 10]
+                                                 [36 10])
+                                   (tab-mark 9
+                                             [8594 9]
+                                             [92 9]))))
 #+end_src
 
 ** ~yuck-mode~
 #+begin_src emacs-lisp
-  (use-package yuck-mode)
+  (use-package yuck-mode
+    :mode ("\\.yuck\\'" . yuck-mode))
 #+end_src
