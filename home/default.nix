@@ -9,6 +9,7 @@ let
     imports = [
       ./config
       inputs.nix-colors.homeManagerModules.default
+      inputs.nix-index-database.hmModules.nix-index
     ];
 
     home.username = "akiyoshi";

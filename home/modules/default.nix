@@ -21,6 +21,9 @@ let
 
     programs.info.enable = true;
 
+    programs.nix-index.enable = true;
+    programs.nix-index-database.comma.enable = true;
+
     services.gnome-keyring.enable = true;
 
     home.packages = with pkgs; [
