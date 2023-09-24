@@ -57,14 +57,14 @@ in
       yuck-mode
     ];
 
-    # overrides = self: super: {
-    #   mozc = super.mozc.overrideAttrs {
-    #     postPatch = ''
-    #       substituteInPlace src/unix/emacs/mozc.el \
-    #         --replace '"mozc_emacs_helper"' '"${pkgs.fcitx5-mozc}/bin/mozc_emacs_helper"'
-    #     '';
-    #   };
-    # };
+    overrides = self: super: {
+      mozc = super.mozc.overrideAttrs {
+        postPatch = ''
+          substituteInPlace src/unix/emacs/mozc.el \
+            --replace '"mozc_emacs_helper"' '"${pkgs.fcitx5-mozc}/bin/mozc_emacs_helper"'
+        '';
+      };
+    };
   };
 
   services.emacs = {
@@ -85,4 +85,3 @@ in
       source "$EAT_SHELL_INTEGRATION_DIR/zsh"
   '';
 }
-

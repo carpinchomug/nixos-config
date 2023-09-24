@@ -8,6 +8,7 @@ let
   home = { pkgs, lib, ... }: {
     imports = [
       ./config
+      config.flake.homeManagerModules.emacs
       inputs.nix-colors.homeManagerModules.default
       inputs.nix-index-database.hmModules.nix-index
     ];

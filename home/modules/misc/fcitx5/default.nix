@@ -14,8 +14,10 @@
     emacs = lib.mkIf
       config.programs.emacs.enable
       "XMODIFIERS=@im=none GTK_IM_MODULE=xim emacs";
-    emacsclient = lib.mkIf
-      config.services.emacs.enable
-      "XMODIFIERS=@im=none GTK_IM_MODULE=xim emacsclient";
   };
+
+  programs.emacs.wrapperArguments = [
+    "--set XMODIFIERS @im=none"
+    "--set GTK_IM_MODULE xim"
+  ];
 }
