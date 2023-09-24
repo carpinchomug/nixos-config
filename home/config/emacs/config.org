@@ -12,8 +12,8 @@ Load ~use-package~.
 
 Eagerly load packages with ~use-package~ when emacs is  started as a daemon.
 #+begin_src emacs-lisp
-   (when (daemonp)
-     (setq use-package-always-demand t))
+  (when (daemonp)
+    (setq use-package-always-demand t))
 #+end_src
 
 * General configuration
@@ -213,7 +213,7 @@ Load a theme.
     :custom
     (consult-narrow-key "<")
     (consult-project-function #'consult--default-project-function)
-    
+
     :init
     ;; Optionally configure the register formatting. This improves the register
     ;; preview for `consult-register', `consult-register-load',
@@ -293,14 +293,19 @@ Load a theme.
 #+end_src
 
 ** ~diff-hl~
+[[https://github.com/dgutov/diff-hl/issues/116][link]].
 #+begin_src emacs-lisp
   (use-package diff-hl
     :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
            (magit-post-refresh . diff-hl-magit-post-refresh)
            (dired-mode . diff-hl-dired-mode)
-           (conf-mode . diff-hl-mode)
-           (prog-mode . diff-hl-mode)
-           (text-mode . diff-hl-mode))
+           (conf-mode . diff-hl-margin-mode)
+           (prog-mode . diff-hl-margin-mode)
+           (text-mode . diff-hl-margin-mode))
+    :custom-face
+    (diff-hl-change ((t (:foreground "#553d00" :background "#ffdfa9"))))
+    (diff-hl-delete ((t (:foreground "#8f1313" :background "#ffd8d5"))))
+    (diff-hl-insert ((t (:foreground "#005000" :background "#c1f2d1"))))
     :config
     (global-diff-hl-mode))
 #+end_src
@@ -601,6 +606,12 @@ Load a theme.
     :mode ("\\.py[iw]?\\'" . python-mode)
     :custom
     (python-indent-guess-indent-offset-verbose nil))
+#+end_src
+
+** ~rainbow-mode~
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :commands rainbow-mode)
 #+end_src
 
 ** ~recentf~

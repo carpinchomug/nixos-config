@@ -46,6 +46,7 @@ in
       org
       org-appear
       org-modern
+      rainbow-mode
       rust-mode
       spacious-padding
       tempel
