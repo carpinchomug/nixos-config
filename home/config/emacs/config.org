@@ -332,6 +332,7 @@ Load a theme.
 ** ~eat~
 #+begin_src emacs-lisp
   (use-package eat
+    :commands (eat eat-project)
     :hook (eshell-load . eat-eshell-mode))
 #+end_src
 
@@ -740,6 +741,8 @@ Load a theme.
 ** ~whitespace~
 #+begin_src emacs-lisp
   (use-package whitespace
+    :commands (whitespace-mode
+               whitespace-cleanup)
     :custom
     (whitespace-display-mappings '((space-mark 32
                                                [183]
