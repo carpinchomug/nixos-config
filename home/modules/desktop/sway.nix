@@ -51,7 +51,7 @@ in
       };
 
       gaps = {
-        inner = 16;
+        inner = 8;
       };
 
       window = {
