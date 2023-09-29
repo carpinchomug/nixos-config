@@ -24,6 +24,8 @@ let
     # https://nix-community.github.io/home-manager/release-notes.html#sec-release-23.05
     home.stateVersion = "23.05";
 
+    home.shellAliases.hm = "home-manager";
+
     nix.extraOptions = ''
       # Enable nix commands and flakes.
       experimental-features = nix-command flakes
