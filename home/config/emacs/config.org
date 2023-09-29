@@ -425,7 +425,9 @@ Load a theme.
 ** ~expand-region~
 #+begin_src emacs-lisp
   (use-package expand-region
-    :bind ("C-=" . er/expand-region))
+    :bind ("C-=" . er/expand-region)
+    :custom
+    (expand-region-smart-cursor t))
 #+end_src
 
 ** ~helpful~
