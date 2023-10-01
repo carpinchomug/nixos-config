@@ -58,23 +58,25 @@ let
 in
 {
   flake.homeConfigurations = {
-    laptop = withSystem "x86_64-linux" ({ pkgs, ... }:
+    "akiyoshi@thinkpad" = withSystem "x86_64-linux" ({ pkgs, ... }:
       homeManagerConfiguration {
         inherit pkgs;
         modules = [
           home
           modules.full
-          ./profiles/laptop.nix
+          inputs.work.homeManagerModules.gpg
+          ./profiles/main.nix
         ];
         extraSpecialArgs = { root = ./.; };
       }
     );
 
-    wsl = withSystem "x86_64-linux" ({ pkgs, ... }:
+    "akiyoshi@wsl" = withSystem "x86_64-linux" ({ pkgs, ... }:
       homeManagerConfiguration {
         inherit pkgs;
         modules = [
           home
+          inputs.work.homeManagerModules.default
           modules.minimal
           ./modules/editors/emacs
           ./modules/misc/fcitx5

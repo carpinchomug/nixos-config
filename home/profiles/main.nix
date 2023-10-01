@@ -20,9 +20,9 @@ in
 
   programs.ssh = {
     matchBlocks = {
-      "github" = {
+      "github-personal" = {
         inherit identityFile;
-        host = "github.com";
+        host = "github-personal";
         hostname = "github.com";
       };
     };

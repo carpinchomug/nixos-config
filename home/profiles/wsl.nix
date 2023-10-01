@@ -1,10 +1,6 @@
 { lib, pkgs, ... }:
 
 {
-  programs.git = {
-    userName = "Akiyoshi Suda";
-  };
-
   programs.helix.defaultEditor = true;
 
   programs.ssh.enable = lib.mkForce false;
