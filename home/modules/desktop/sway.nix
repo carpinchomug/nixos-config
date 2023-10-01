@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.wayland.windowManager.sway;
@@ -40,7 +40,7 @@ in
       output = {
         "*" = {
           # default wallpaper
-          bg = "${cfg.package}/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill";
+          bg = lib.mkDefault "${cfg.package}/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill";
         };
       };
 
