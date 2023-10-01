@@ -1,6 +1,14 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
+let
+  identityFile = "~/.ssh/gpg.pub";
+
+in
 {
+  programs.bash.profileExtra = ''
+    ${config.programs.gpg.package}/bin/gpg2 --export-ssh-key aki.suda@protonmail.com > ${identityFile}
+  '';
+
   programs.git = {
     userName = "Akiyoshi Suda";
     userEmail = "aki.suda@protonmail.com";
@@ -13,9 +21,9 @@
   programs.ssh = {
     matchBlocks = {
       "github" = {
+        inherit identityFile;
         host = "github.com";
         hostname = "github.com";
-        identityFile = "~/.ssh/gpg.pub";
       };
     };
   };
