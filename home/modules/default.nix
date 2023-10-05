@@ -30,6 +30,7 @@ let
       bat
       bottom
       conda
+      exercism
       fd
       ffmpeg
       gdb
