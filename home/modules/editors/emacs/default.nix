@@ -53,6 +53,7 @@ in
       treesit-auto
       treesit-grammars.with-all-grammars
       vertico
+      vertico-posframe
       web-mode
       which-key
       yuck-mode

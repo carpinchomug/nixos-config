@@ -717,6 +717,14 @@ Load a theme.
     (vertico-mode))
 #+end_src
 
+** ~vertico-posframe~
+#+begin_src emacs-lisp
+  (use-package vertico-posframe
+    :after vertico
+    :config
+    (vertico-posframe-mode))
+#+end_src
+
 ** ~web-mode~
 #+begin_src emacs-lisp
   (use-package web-mode
