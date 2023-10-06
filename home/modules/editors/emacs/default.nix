@@ -55,6 +55,7 @@ in
       tempel
       treesit-auto
       treesit-grammars.with-all-grammars
+      typst-ts-mode
       vertico
       vertico-posframe
       web-mode
@@ -74,6 +75,10 @@ in
           substituteInPlace ox-reveal.el \
             --replace '"./reveal.js"' '"file://${pkgs.reveal}/lib/node_modules/reveal.js"'
         '';
+      };
+      typst-ts-mode = pkgs.callPackage ./typst-ts-mode.nix {
+        inherit (pkgs) fetchFromSourcehut;
+        inherit (super) trivialBuild;
       };
     };
   };

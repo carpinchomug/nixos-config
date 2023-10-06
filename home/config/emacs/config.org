@@ -735,6 +735,11 @@ Load a theme.
     (global-treesit-auto-mode))
 #+end_src
 
+** ~typst-ts-mode~
+#+begin_src emacs-lisp
+  (use-package typst-ts-mode
+    :mode ("\\.typ\\'" . typst-ts-mode))
+#+end_src
 ** ~vertico~
 #+begin_src emacs-lisp
   (use-package vertico
