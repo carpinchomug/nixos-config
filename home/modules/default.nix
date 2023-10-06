@@ -40,6 +40,7 @@ let
       ripgrep
       texlab
       texlive.combined.scheme-full
+      typst
       unzip
       xdg-user-dirs
       zip
