@@ -48,6 +48,7 @@ in
       org-appear
       org-modern
       ox-reveal
+      pdf-tools
       rainbow-mode
       rust-mode
       spacious-padding

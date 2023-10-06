@@ -609,6 +609,13 @@ Load a theme.
       (setq show-paren-context-when-offscreen t))
 #+end_src
 
+** ~pdf-tools~
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install))
+#+end_src
+
 ** ~pixel-scroll~
 #+begin_src emacs-lisp
   (use-package pixel-scroll
