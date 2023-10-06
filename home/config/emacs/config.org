@@ -294,7 +294,6 @@ Load a theme.
     :init
     ;; Show a dashboard in emacsclient.
     (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-    (add-hook 'dashboard-mode-hook (lambda () (setq mode-line-format nil)))
     :config
     (dashboard-setup-startup-hook))
 #+end_src
