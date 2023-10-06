@@ -437,6 +437,12 @@ Load a theme.
     (expand-region-smart-cursor t))
 #+end_src
 
+** ~face-remap~
+#+begin_src emacs-lisp
+(use-package face-remap
+  :hook (org-mode . variable-pitch-mode))
+#+end_src
+
 ** ~helpful~
 #+begin_src emacs-lisp
   (use-package helpful
@@ -545,17 +551,18 @@ Load a theme.
     (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
     (org-agenda-files '("~/org"))
 
-          ;; Edit settings
+    ;; Edit settings
     (org-auto-align-tags nil)
     (org-tags-column 0)
     (org-catch-invisible-edits 'show-and-error)
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
+    (org-src-preserve-indentation t)
 
-          ;; Org styling, hide markup etc.
+    ;; Org styling, hide markup etc.
     (org-hide-emphasis-markers t)
     (org-pretty-entities t)
-          ;; Agenda styling
+    ;; Agenda styling
     (org-agenda-tags-column 0)
     (org-agenda-block-separator ?-)
     (org-agenda-time-grid '((daily today require-timed)
@@ -584,6 +591,12 @@ Load a theme.
     :hook (org-mode . org-modern-mode)
     :init
     (add-hook 'org-modern-mode-hook (lambda () (display-line-numbers-mode -1))))
+#+end_src
+
+** ~org-reveal~
+#+begin_src emacs-lisp
+(use-package ox-reveal
+  :after org-mode)
 #+end_src
 
 ** ~paren~

@@ -47,6 +47,7 @@ in
       org
       org-appear
       org-modern
+      ox-reveal
       rainbow-mode
       rust-mode
       spacious-padding
