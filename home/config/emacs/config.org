@@ -596,7 +596,7 @@ Load a theme.
 ** ~org-reveal~
 #+begin_src emacs-lisp
 (use-package ox-reveal
-  :after org-mode)
+  :after org)
 #+end_src
 
 ** ~paren~

@@ -68,6 +68,12 @@ in
             --replace '"mozc_emacs_helper"' '"${pkgs.fcitx5-mozc}/bin/mozc_emacs_helper"'
         '';
       };
+      ox-reveal = super.ox-reveal.overrideAttrs {
+        postPatch = ''
+          substituteInPlace ox-reveal.el \
+            --replace '"./reveal.js"' '"file://${pkgs.reveal}/lib/node_modules/reveal.js"'
+        '';
+      };
     };
   };
 
