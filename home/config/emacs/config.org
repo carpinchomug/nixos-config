@@ -272,6 +272,13 @@ Load a theme.
     (global-corfu-mode))
 #+end_src
 
+** ~csv~
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :mode (("\\.csv\\'" . csv-mode)
+           ("\\.tsv\\'" . tsv-mode)))
+#+end_src
+
 ** ~dashboard~
 #+begin_src emacs-lisp
   (use-package dashboard

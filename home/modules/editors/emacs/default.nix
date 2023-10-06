@@ -23,6 +23,7 @@ in
       cmake-mode
       consult
       corfu
+      csv-mode
       dashboard
       diff-hl
       eat
