@@ -421,6 +421,13 @@ Load a theme.
     (epg-pinentry-mode 'loopback))
 #+end_src
 
+** ~eshell~
+#+begin_src emacs-lisp
+  (use-package eshell
+    :init
+    (add-hook 'eshell-mode-hook (lambda () (setq-local scroll-margin 0))))
+#+end_src
+
 ** ~exec-path-from-shell~
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
