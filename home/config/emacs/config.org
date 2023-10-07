@@ -350,7 +350,8 @@ Load a theme.
            ((js-mode js-ts-mode typescript-ts-mode tsx-ts-mode) . eglot-ensure)
            (nix-mode . eglot-ensure)
            ((python-mode python-ts-mode) . eglot-ensure)
-           ((rust-mode rust-ts-mode) . eglot-ensure))
+           ((rust-mode rust-ts-mode) . eglot-ensure)
+           (typst-ts-mode . eglot-ensure))
     :custom
     (eglot-autoshutdown t)
     (eglot-workspace-configuration '(:nil (:formatting (:command ["nixpkgs-fmt"]))

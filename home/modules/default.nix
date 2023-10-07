@@ -41,6 +41,7 @@ let
       texlab
       texlive.combined.scheme-full
       typst
+      typst-lsp
       unzip
       xdg-user-dirs
       zip
