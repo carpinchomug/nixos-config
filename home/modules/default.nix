@@ -34,6 +34,9 @@ let
       fd
       ffmpeg
       gdb
+      hunspell
+      hunspellDicts.en-us
+      hunspellDicts.en-gb-ise
       just
       nixd
       nixpkgs-fmt

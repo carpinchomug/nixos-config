@@ -380,7 +380,7 @@ Load a theme.
   (use-package embark
     :bind
     (("C-." . embark-act)
-     ("C-;" . embark-dwim)
+     ("M-." . embark-dwim)
      ("C-h B" . embark-bindings))
     :init
     ;; Optionally replace the key help with a completing-read interface
@@ -446,8 +446,16 @@ Load a theme.
 
 ** ~face-remap~
 #+begin_src emacs-lisp
-(use-package face-remap
-  :hook (org-mode . variable-pitch-mode))
+  (use-package face-remap
+    :hook (org-mode . variable-pitch-mode))
+#+end_src
+
+** ~flyspell~
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :commands (flyspell-mode flyspell-prog-mode)
+    :config
+    (unbind-key "C-." flyspell-mode-map))
 #+end_src
 
 ** ~helpful~
