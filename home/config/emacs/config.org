@@ -103,13 +103,13 @@ Set up fonts.
 
 Load a theme.
   #+begin_src emacs-lisp
-    (use-package modus-themes
-      :config
-      (setq modus-themes-mixed-fonts t)
-      (setq modus-operandi-palette-overrides '((fringe unspecified)
-                                               (bg-line-number-inactive upspecified)
-                                               (bg-line-number-active unspecified)))
-      (load-theme 'modus-operandi t))
+  (use-package modus-themes
+    :config
+    (setq modus-themes-mixed-fonts t)
+    (setq modus-operandi-palette-overrides '((fringe unspecified)
+                                             (bg-line-number-inactive upspecified)
+                                             (bg-line-number-active unspecified)))
+    (load-theme 'modus-operandi t))
 #+end_src
 
 * Packages
@@ -767,6 +767,7 @@ Load a theme.
 ** ~vertico-posframe~
 #+begin_src emacs-lisp
   (use-package vertico-posframe
+    :disabled
     :after vertico
     :config
     (vertico-posframe-mode))
