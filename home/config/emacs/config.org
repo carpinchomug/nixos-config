@@ -8,6 +8,8 @@ Load ~use-package~.
     (require 'use-package))
 
   (require 'bind-key)
+  (require 'diminish)
+  (require 'use-package-hydra)
 #+end_src
 
 Eagerly load packages with ~use-package~ when emacs is  started as a daemon.
@@ -80,29 +82,34 @@ Remove visual clutters.
   (setq ring-bell-function 'ignore)
   #+end_src
 
-Set up fonts.
+Enable visual line based editing.
 #+begin_src emacs-lisp
-  (defun my/setup-fonts ()
-    (set-fontset-font t
-                      'japanese-jisx0213.2004-1
-                      "Sarasa Mono J")
-    (set-fontset-font "fontset-standard"
-                      nil
-                      "Iosevka Aile")
-    (set-fontset-font "fontset-standard"
-                      'japanese-jisx0213.2004-1
-                      "Sarasa UI J")
-    (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
-    (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
-    (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
-
-  (if (daemonp)
-      (add-hook 'server-after-make-frame-hook (lambda () (my/setup-fonts)))
-    (when (display-graphic-p) (my/setup-fonts)))
+  (global-visual-line-mode)
   #+end_src
 
-Load a theme.
+  Set up fonts.
   #+begin_src emacs-lisp
+    (defun my/setup-fonts ()
+      (set-fontset-font t
+                        'japanese-jisx0213.2004-1
+                        "Sarasa Mono J")
+      (set-fontset-font "fontset-standard"
+                        nil
+                        "Iosevka Aile")
+      (set-fontset-font "fontset-standard"
+                        'japanese-jisx0213.2004-1
+                        "Sarasa UI J")
+      (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
+      (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
+      (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
+
+    (if (daemonp)
+        (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
+      (when (display-graphic-p) (my/setup-fonts)))
+#+end_src
+
+Load a theme.
+#+begin_src emacs-lisp
   (use-package modus-themes
     :config
     (setq modus-themes-mixed-fonts t)
@@ -112,6 +119,21 @@ Load a theme.
     (load-theme 'modus-operandi t))
 #+end_src
 
+** Keybindings
+*** ~hydra~
+#+begin_src emacs-lisp
+  (use-package hydra
+    :demand t
+    :bind (("C-x +" . hydra-zoom/body))
+    :config
+    (defhydra hydra-zoom (:color red)
+      "Zoom"
+      ("+" text-scale-increase)
+      ("-" text-scale-decrease)
+      ("0" (text-scale-adjust 0))
+      ("q" nil)))
+#+end_src
+
 * Packages
 ** ~ace-window~
 #+begin_src emacs-lisp
@@ -119,6 +141,13 @@ Load a theme.
     :bind ("C-x o" . 'ace-window)
     :custom
     (aw-background nil))
+#+end_src
+
+** ~autorevert~
+#+begin_src emacs-lisp
+  (use-package autorevert
+    :config
+    (global-auto-revert-mode))
 #+end_src
 
 ** ~avy~
@@ -355,7 +384,7 @@ Load a theme.
     :custom
     (eglot-autoshutdown t)
     (eglot-workspace-configuration '(:nil (:formatting (:command ["nixpkgs-fmt"]))
-                                     :nixd (:formatting (:command "nixpkgs-fmt"))))
+                                          :nixd (:formatting (:command "nixpkgs-fmt"))))
     :config
     (add-to-list 'eglot-server-programs `(nix-mode
                                           . ,(eglot-alternatives '("nil" "nixd")))))
@@ -378,10 +407,11 @@ Load a theme.
 ** ~embark~
 #+begin_src emacs-lisp
   (use-package embark
-    :bind
-    (("C-." . embark-act)
-     ("M-." . embark-dwim)
-     ("C-h B" . embark-bindings))
+    :bind (("C-." . embark-act)
+           ("C-;" . embark-dwim)
+           ("C-h B" . embark-bindings)
+           :map embark-collect-mode-map
+           ("m" . embark-select))
     :init
     ;; Optionally replace the key help with a completing-read interface
     (setq prefix-help-command #'embark-prefix-help-command)
@@ -424,6 +454,7 @@ Load a theme.
 ** ~eshell~
 #+begin_src emacs-lisp
   (use-package eshell
+    :commands eshell
     :init
     (add-hook 'eshell-mode-hook (lambda () (setq-local scroll-margin 0))))
 #+end_src
@@ -469,9 +500,10 @@ Load a theme.
            ("C-h F" . helpful-function)))
 #+end_src
 
-** ~hydra~
+** ~ibuffer~
 #+begin_src emacs-lisp
-  (use-package hydra)
+  (use-package ibuffer
+    :bind ("C-x C-b" . ibuffer))
 #+end_src
 
 ** ~ligature~
@@ -489,6 +521,13 @@ Load a theme.
     ;; Enables ligature checks globally in all buffers. You can also do it
     ;; per mode with `ligature-mode'.
     (global-ligature-mode))
+#+end_src
+
+** ~markdown-mode~
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
+           ("README\\.md\\'" . gfm-mode)))
 #+end_src
 
 ** ~magit~
@@ -515,6 +554,14 @@ Load a theme.
     (marginalia-mode))
 #+end_src
 
+** ~midnight~
+#+begin_src emacs-lisp
+  (use-package midnight
+    :config
+    (add-to-list 'clean-buffer-list-kill-regexps "\\`\\*helpful ")
+    (midnight-mode))
+#+end_src
+
 ** ~mozc~
 #+begin_src emacs-lisp
   (use-package mozc
@@ -527,6 +574,7 @@ Load a theme.
 ** ~nerd-icons~
 #+begin_src emacs-lisp
   (use-package nerd-icons
+    :commands nerd-icons-insert
     :custom
     (nerd-icons-font-family "Iosevka Nerd Font"))
 #+end_src
@@ -534,15 +582,21 @@ Load a theme.
 ** ~nix-mode~
 #+begin_src emacs-lisp
   (use-package nix-mode
-    :mode ("\\.nix\\'" . nix-mode))
+    :mode "\\.nix\\'")
+#+end_src
+
+** ~nix-ts-mode~
+#+begin_src emacs-lisp
+  (use-package nix-ts-mode
+    :mode "\\.nix\\'"
+    :custom
+    (nix-ts-mode-hook nix-mode-hook))
 #+end_src
 
 ** ~olivetti~
 #+begin_src emacs-lisp
   (use-package olivetti
-      :commands olivetti-mode
-      :init
-      (add-hook 'olivetti-mode-hook (lambda () (diff-hl-mode))))
+    :commands olivetti-mode)
 #+end_src
 
 ** ~orderless~
@@ -558,9 +612,22 @@ Load a theme.
 #+begin_src emacs-lisp
   (use-package org
     :ensure t
+    :hydra (hydra-org
+            (:color red)
+            "Org-mode"
+            ("n" org-next-visible-heading)
+            ("p" org-previous-visible-heading)
+            ("f" org-forward-heading-same-level)
+            ("b" org-backward-heading-same-level)
+            ("u" outline-up-heading)
+            ("<up>" org-move-subtree-up)
+            ("<down>" org-move-subtree-down))
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
-           ("C-c c" . org-capture))
+           ("C-c c" . org-capture)
+           :map org-mode-map
+           ("C-c C-h" . hydra-org/body))
+    :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
     (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
@@ -572,7 +639,6 @@ Load a theme.
     (org-catch-invisible-edits 'show-and-error)
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
-    (org-src-preserve-indentation t)
 
     ;; Org styling, hide markup etc.
     (org-hide-emphasis-markers t)
@@ -610,18 +676,18 @@ Load a theme.
 
 ** ~org-reveal~
 #+begin_src emacs-lisp
-(use-package ox-reveal
-  :after org)
+  (use-package ox-reveal
+    :after org)
 #+end_src
 
 ** ~paren~
 #+begin_src emacs-lisp
-    (use-package paren
-      :hook ((conf-mode . show-paren-mode)
-             (prog-mode . show-paren-mode)
-             (text-mode . show-paren-mode))
-      :init
-      (setq show-paren-context-when-offscreen t))
+  (use-package paren
+    :hook ((conf-mode . show-paren-mode)
+           (prog-mode . show-paren-mode)
+           (text-mode . show-paren-mode))
+    :init
+    (setq show-paren-context-when-offscreen t))
 #+end_src
 
 ** ~pdf-tools~
@@ -669,7 +735,7 @@ Load a theme.
 ** ~rust-mode~
 #+begin_src emacs-lisp
   (use-package rust-mode
-    :mode ("\\.rs\\'" . rust-mode)
+    :mode "\\.rs\\'"
     :custom
     (rust-format-on-save t))
 #+end_src
@@ -677,7 +743,7 @@ Load a theme.
 ** ~rust-ts-mode~
 #+begin_src emacs-lisp
   (use-package rust-ts-mode
-    :mode ("\\.rs\\'" . rust-ts-mode)
+    :mode "\\.rs\\'"
     :custom
     (rust-ts-mode-hook rust-mode-hook))
 #+end_src
@@ -755,6 +821,7 @@ Load a theme.
   (use-package typst-ts-mode
     :mode ("\\.typ\\'" . typst-ts-mode))
 #+end_src
+
 ** ~vertico~
 #+begin_src emacs-lisp
   (use-package vertico
@@ -762,6 +829,21 @@ Load a theme.
     (vertico-cycle t)
     :config
     (vertico-mode))
+#+end_src
+
+** ~undo-tree~
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :demand t
+    :hydra (hydra-undo-tree
+            (:color red :hint nil)
+            "Undo-tree"
+            ("u" undo-tree-undo)
+            ("r" undo-tree-redo)
+            ("s" undo-tree-save-history))
+    :bind ("M-." . hydra-undo-tree/body)
+    :config
+    (global-undo-tree-mode))
 #+end_src
 
 ** ~vertico-posframe~
@@ -814,6 +896,13 @@ Load a theme.
                                    (tab-mark 9
                                              [8594 9]
                                              [92 9]))))
+#+end_src
+
+** ~whitespace-cleanup-mode~
+#+begin_src emacs-lisp
+  (use-package whitespace-cleanup-mode
+    :config
+    (global-whitespace-cleanup-mode))
 #+end_src
 
 ** ~yuck-mode~

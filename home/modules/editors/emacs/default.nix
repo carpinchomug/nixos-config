@@ -26,6 +26,7 @@ in
       csv-mode
       dashboard
       diff-hl
+      diminish
       eat
       eglot
       embark
@@ -36,12 +37,14 @@ in
       helpful
       hydra
       ligature
+      markdown-mode
       magit
       marginalia
       modus-themes
       mozc
       nerd-icons
       nix-mode
+      nix-ts-mode
       olivetti
       orderless
       org
@@ -56,10 +59,13 @@ in
       treesit-auto
       treesit-grammars.with-all-grammars
       typst-ts-mode
+      undo-tree
+      use-package-hydra
       vertico
       vertico-posframe
       web-mode
       which-key
+      whitespace-cleanup-mode
       yuck-mode
     ];
 
