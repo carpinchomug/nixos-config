@@ -25,8 +25,6 @@
     nur.url = "github:nix-community/nur";
 
     nix-colors.url = "github:misterio77/nix-colors";
-
-    work.url = "git+ssh://git@github.com/carpinchomug/dotfiles-work";
   };
 
   outputs = inputs@{ flake-parts, ... }:

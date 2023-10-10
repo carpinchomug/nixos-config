@@ -64,7 +64,6 @@ in
         modules = [
           home
           modules.full
-          inputs.work.homeManagerModules.gpg
           ./profiles/main.nix
         ];
         extraSpecialArgs = { root = ./.; };
@@ -76,7 +75,6 @@ in
         inherit pkgs;
         modules = [
           home
-          inputs.work.homeManagerModules.default
           modules.minimal
           ./modules/editors/emacs
           ./modules/misc/fcitx5
