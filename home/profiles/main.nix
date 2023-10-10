@@ -45,8 +45,13 @@ in
       input = {
         "1:1:AT_Translated_Set_2_keyboard" = {
           xkb_layout = "us";
-          xkb_variant = "altgr-intl";
-          xkb_options = "lv3:caps_switch,lv3:ralt_alt";
+
+          # I don't know how these will interact with kmonad. I guess it's
+          # easier to define a new layer in kmonad for accented letters than
+          # to fight kmonad.
+          #
+          # xkb_variant = "altgr-intl";
+          # xkb_options = "lv3:caps_switch,lv3:ralt_alt";
         };
 
         "type:touchpad" = {

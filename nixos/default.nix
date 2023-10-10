@@ -4,6 +4,8 @@ let
   inherit (inputs.nixpkgs.lib) nixosSystem;
 
   defaultModule = { pkgs, ... }: {
+    imports = [ inputs.kmonad.nixosModules.default ];
+
     nix.settings.auto-optimise-store = true;
     nix.settings.trusted-users = [ "root" "@wheel" ];
     #https://github.com/NixOS/nix/pull/7423
@@ -46,6 +48,7 @@ in
         ./modules/boot.nix
         ./modules/desktop.nix
         ./modules/i18n.nix
+        ./modules/kmonad.nix
         ./modules/networking.nix
         ./modules/pipewire.nix
         ./modules/polkit.nix

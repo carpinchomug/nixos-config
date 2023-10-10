@@ -5,8 +5,10 @@
     isNormalUser = true;
     extraGroups = [
       "libvirtd"
+      "input"
       "networkmanager"
       "pipewire"
+      "uinput"
       "wheel"
     ];
     packages = [ pkgs.helix ];
