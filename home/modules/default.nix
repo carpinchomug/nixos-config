@@ -72,7 +72,9 @@ in
 
     home.packages = with pkgs; [
       # GUI apps
+      calibre
       inkscape
+      zotero
     ];
   };
 }

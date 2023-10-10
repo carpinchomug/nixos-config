@@ -1,13 +1,8 @@
-{ root, ... }:
+{ wayland, ... }:
 
 {
   imports = [
+    (if wayland then ./sway else ./i3)
     ./flameshot.nix
-    ./foot.nix
-    ./mako.nix
-    ./sway.nix
-    ./swayidle.nix
-    ./swaylock.nix
-    ./wofi.nix
   ];
 }

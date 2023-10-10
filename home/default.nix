@@ -66,7 +66,7 @@ in
           modules.full
           ./profiles/main.nix
         ];
-        extraSpecialArgs = { root = ./.; };
+        extraSpecialArgs = { root = ./.; wayland = true; };
       }
     );
 
@@ -76,12 +76,21 @@ in
         modules = [
           home
           modules.minimal
+          ./desktop
+          ./modules/browsers/firefox
           ./modules/editors/emacs
           ./modules/misc/fcitx5
           ./modules/misc/fonts
-          ./profiles/wsl.nix
+          ./misc/colorschemes
+          ./misc/fcitx5
+          ./misc/fonts
+          ./misc/gtk
+          ./misc/qt
+          ./security/browserpass
+          ./modules/wsl
+          ./profiles/work.nix
         ];
-        extraSpecialArgs = { root = ./.; };
+        extraSpecialArgs = { root = ./.; wayland = false; };
       }
     );
   };

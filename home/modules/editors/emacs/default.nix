@@ -1,8 +1,7 @@
-{ config, lib, pkgs, root, ... }:
+{ config, lib, pkgs, root, wayland, ... }:
 
 let
   inherit (config.wayland.windowManager) hyprland sway;
-  wayland = hyprland.enable || sway.enable;
   package = if wayland then pkgs.emacs29-pgtk else pkgs.emacs29;
 
 in
