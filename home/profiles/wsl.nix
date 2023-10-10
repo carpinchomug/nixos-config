@@ -1,6 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
+  home.keyboard.layout = "jp";
+
+  programs.bash.initExtra = ''
+    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+  '';
+
   programs.bash.profileExtra = ''
     ${config.programs.gpg.package}/bin/gpg2 --export-ssh-key 0x00C5B82A696B63FB > ~/.ssh/gpg_personal.pub
     ${config.programs.gpg.package}/bin/gpg2 --export-ssh-key 0x3877C2BB0DF20510 > ~/.ssh/gpg_work.pub
@@ -38,5 +44,9 @@
   ];
   services.gpg-agent.extraConfig = ''
     pinentry-program "/mnt/c/Program Files (x86)/GnuPG/bin/pinentry-basic.exe"
+  '';
+
+  xsession.profileExtra = ''
+    xset -r 49
   '';
 }
