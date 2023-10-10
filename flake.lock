@@ -183,23 +183,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
-        "nur": "nur",
-        "work": "work"
-      }
-    },
-    "work": {
-      "locked": {
-        "lastModified": 1696164372,
-        "narHash": "sha256-L2UNWp3sBQPQb1ydYAPQ4Tq1v9gjhlt0pOu1PwYI4/E=",
-        "ref": "refs/heads/main",
-        "rev": "d9304f99fe6bf2f28e26f2bc25922d7ee939c3cc",
-        "revCount": 4,
-        "type": "git",
-        "url": "ssh://git@github.com/carpinchomug/dotfiles-work"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/carpinchomug/dotfiles-work"
+        "nur": "nur"
       }
     }
   },
