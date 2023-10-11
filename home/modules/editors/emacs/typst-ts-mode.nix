@@ -3,7 +3,7 @@
 }:
 
 trivialBuild {
-  pname =  "typst-ts-mode";
+  pname = "typst-ts-mode";
   version = "2023-10-07";
 
   src = fetchFromSourcehut {

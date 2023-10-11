@@ -64,16 +64,18 @@ in
   "XF86AudioMicMute" = "exec pactl set-source-mute 0 toggle";
 }) //
 lib.warnIfNot config.services.flameshot.enable "Flameshot not enabled"
-lib.optionalAttrs config.services.flameshot.enable {
-  # Start the Flameshot screenshot tool and take a screenshot
-  "Print" = "exec ${flameshot} gui --path $(xdg-user-dir PICTURES)/Screenshots";
-  # Wait for 3 seconds, then start the Flameshot screenshot tool and take a screenshot
-  "Ctrl+Print" = "exec ${flameshot} gui --delay 3000 --path $(xdg-user-dir PICTURES)/Screenshots";
-  # Take a full-screen (all monitors) screenshot and save it
-  "Shift+Print" = "exec ${flameshot} full --path $(xdg-user-dir PICTURES)/Screenshots";
-  # Take a full-screen (all monitors) screenshot and copy it to the clipboard and ask where to save
-  "Ctrl+Shift+Print" = "exec ${flameshot} full --clipboard";
-} // {
+  lib.optionalAttrs
+  config.services.flameshot.enable
+  {
+    # Start the Flameshot screenshot tool and take a screenshot
+    "Print" = "exec ${flameshot} gui --path $(xdg-user-dir PICTURES)/Screenshots";
+    # Wait for 3 seconds, then start the Flameshot screenshot tool and take a screenshot
+    "Ctrl+Print" = "exec ${flameshot} gui --delay 3000 --path $(xdg-user-dir PICTURES)/Screenshots";
+    # Take a full-screen (all monitors) screenshot and save it
+    "Shift+Print" = "exec ${flameshot} full --path $(xdg-user-dir PICTURES)/Screenshots";
+    # Take a full-screen (all monitors) screenshot and copy it to the clipboard and ask where to save
+    "Ctrl+Shift+Print" = "exec ${flameshot} full --clipboard";
+  } // {
   #
   # Moving around:
   #

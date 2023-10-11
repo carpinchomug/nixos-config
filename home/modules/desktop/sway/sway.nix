@@ -63,6 +63,17 @@ in
         border = 2;
       };
 
+      fonts = {
+        names = [
+          "Sarasa Mono J"
+          "Iosevka Nerd Font"
+          "Noto Sans CJK JP"
+          "DejaVu Sans Mono"
+        ];
+
+        size = 11.0;
+      };
+
       startup = [
         {
           command = "${configure-gtk}/bin/configure-gtk";

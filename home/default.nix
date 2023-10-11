@@ -76,17 +76,17 @@ in
         modules = [
           home
           modules.minimal
-          ./desktop
           ./modules/browsers/firefox
+          ./modules/desktop
           ./modules/editors/emacs
           ./modules/misc/fcitx5
           ./modules/misc/fonts
-          ./misc/colorschemes
-          ./misc/fcitx5
-          ./misc/fonts
-          ./misc/gtk
-          ./misc/qt
-          ./security/browserpass
+          ./modules/misc/colorschemes
+          ./modules/misc/fcitx5
+          ./modules/misc/fonts
+          ./modules/misc/gtk
+          ./modules/misc/qt
+          ./modules/security/browserpass
           ./modules/wsl
           ./profiles/work.nix
         ];
