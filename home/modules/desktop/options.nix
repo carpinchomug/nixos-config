@@ -81,8 +81,8 @@ in
   };
 
   # workspaceAutoBackAndForth
-  
+
   # workspaceLayout
-  
+
   # workspaceOutputAssign;
 }
