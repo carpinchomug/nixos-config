@@ -11,21 +11,6 @@ let
       ./security/ssh
     ];
 
-    programs.bash.enable = true;
-
-    programs.direnv.enable = true;
-    programs.direnv.nix-direnv.enable = true;
-
-    programs.eza.enable = true;
-    programs.eza.enableAliases = true;
-
-    programs.info.enable = true;
-
-    programs.nix-index.enable = true;
-    programs.nix-index-database.comma.enable = true;
-
-    services.gnome-keyring.enable = true;
-
     home.packages = with pkgs; [
       bat
       bottom
@@ -49,6 +34,28 @@ let
       xdg-user-dirs
       zip
     ];
+
+    home.shellAliases = {
+      hm = "home-manager";
+      cd = "z";
+    };
+
+    programs.bash.enable = true;
+
+    programs.direnv.enable = true;
+    programs.direnv.nix-direnv.enable = true;
+
+    programs.eza.enable = true;
+    programs.eza.enableAliases = true;
+
+    programs.info.enable = true;
+
+    programs.nix-index.enable = true;
+    programs.nix-index-database.comma.enable = true;
+
+    programs.zoxide.enable = true;
+
+    services.gnome-keyring.enable = true;
   };
 
 in
