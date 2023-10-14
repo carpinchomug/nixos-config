@@ -823,6 +823,24 @@ Load a theme.
     :mode ("\\.typ\\'" . typst-ts-mode))
 #+end_src
 
+** ~undo-tree~
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :disabled
+    :hydra (hydra-undo-tree
+            (:color red :hint nil)
+            "Undo-tree"
+            ("u" undo-tree-undo)
+            ("r" undo-tree-redo)
+            ("s" undo-tree-save-history))
+    :commands (hudra-undo-tree/body)
+    :custom
+    (undo-tree-history-directory-alist
+     `(("." . ,(expand-file-name "undo-tree-history" user-emacs-directory))))
+    :config
+    (global-undo-tree-mode))
+#+end_src
+
 ** ~vertico~
 #+begin_src emacs-lisp
   (use-package vertico
@@ -832,19 +850,10 @@ Load a theme.
     (vertico-mode))
 #+end_src
 
-** ~undo-tree~
+** ~vundo~
 #+begin_src emacs-lisp
-  (use-package undo-tree
-    :demand t
-    :hydra (hydra-undo-tree
-            (:color red :hint nil)
-            "Undo-tree"
-            ("u" undo-tree-undo)
-            ("r" undo-tree-redo)
-            ("s" undo-tree-save-history))
-    :bind ("M-." . hydra-undo-tree/body)
-    :config
-    (global-undo-tree-mode))
+  (use-package vundo
+    :commands (vundo))
 #+end_src
 
 ** ~vertico-posframe~

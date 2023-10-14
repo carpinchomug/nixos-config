@@ -62,6 +62,7 @@ in
       use-package-hydra
       vertico
       vertico-posframe
+      vundo
       web-mode
       which-key
       whitespace-cleanup-mode
