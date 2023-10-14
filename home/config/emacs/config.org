@@ -594,7 +594,6 @@ Load a theme.
 ** ~mozc~
 #+begin_src emacs-lisp
   (use-package mozc
-    :commands toggle-input-method
     :init
     (setq default-input-method "japanese-mozc")
     (global-set-key [zenkaku-hankaku] #'toggle-input-method)
@@ -643,7 +642,6 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~org~
 #+begin_src emacs-lisp
   (use-package org
-    :ensure t
     :hydra (hydra-org
             (:color red)
             "Org-mode"
@@ -657,7 +655,7 @@ Disabled until I figure out how to get indentation to work properly.
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
            ("C-c c" . org-capture))
-           :mode ("\\.org\\'" . org-mode)
+    :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
     (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
@@ -879,7 +877,6 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~web-mode~
 #+begin_src emacs-lisp
   (use-package web-mode
-    :ensure t
     :mode ("\\.phtml\\'"
            "\\.tpl\\.php\\'"
            "\\.tpl\\'"
