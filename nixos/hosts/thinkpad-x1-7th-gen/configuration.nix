@@ -7,7 +7,7 @@
   ];
 
   networking = {
-    hostName = "ThinkPad";
+    hostName = "thinkpad";
     networkmanager = {
       enable = true;
       dns = "systemd-resolved";
