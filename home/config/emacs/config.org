@@ -123,15 +123,37 @@ Load a theme.
 *** ~hydra~
 #+begin_src emacs-lisp
   (use-package hydra
-    :demand t
-    :bind (("C-x +" . hydra-zoom/body))
+    :hydra (hydra-master
+            (:color blue)
+            "Hydras"
+            ("n" hydra-navigate/body "Navigate")
+            ("o" hydra-org/body "Org")
+            ;; ("w" hydra-window/body "Window")
+            ("+" hydra-zoom/body "Zoom")
+            ("/" hydra-undo/body "Undo")
+            ("q" nil))
+    :bind ("H-h" . hydra-master/body)
     :config
     (defhydra hydra-zoom (:color red)
       "Zoom"
       ("+" text-scale-increase)
       ("-" text-scale-decrease)
       ("0" (text-scale-adjust 0))
-      ("q" nil)))
+      ("q" nil))
+
+    (defhydra hydra-undo (:color red)
+      "Undo"
+      ("u" undo)
+      ("r" undo-redo)
+      ("v" vundo :exit t)
+      ("q" nil))
+
+    (defhydra hydra-navigate (:color red)
+      "Navigate"
+      ("f" forward-char)
+      ("b" backward-char)
+      ("n" next-line)
+      ("p" previous-line)))
 #+end_src
 
 * Packages
@@ -152,7 +174,8 @@ Load a theme.
 
 ** ~avy~
 #+begin_src emacs-lisp
-  (use-package avy)
+  (use-package avy
+    :bind ("M-g c" . avy-goto-char))
 #+end_src
 
 ** ~beacon~
@@ -633,10 +656,8 @@ Disabled until I figure out how to get indentation to work properly.
             ("<down>" org-move-subtree-down))
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
-           ("C-c c" . org-capture)
-           :map org-mode-map
-           ("C-c C-h" . hydra-org/body))
-    :mode ("\\.org\\'" . org-mode)
+           ("C-c c" . org-capture))
+           :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
     (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
@@ -829,24 +850,6 @@ Disabled until I figure out how to get indentation to work properly.
 #+begin_src emacs-lisp
   (use-package typst-ts-mode
     :mode ("\\.typ\\'" . typst-ts-mode))
-#+end_src
-
-** ~undo-tree~
-#+begin_src emacs-lisp
-  (use-package undo-tree
-    :disabled
-    :hydra (hydra-undo-tree
-            (:color red :hint nil)
-            "Undo-tree"
-            ("u" undo-tree-undo)
-            ("r" undo-tree-redo)
-            ("s" undo-tree-save-history))
-    :commands (hudra-undo-tree/body)
-    :custom
-    (undo-tree-history-directory-alist
-     `(("." . ,(expand-file-name "undo-tree-history" user-emacs-directory))))
-    :config
-    (global-undo-tree-mode))
 #+end_src
 
 ** ~vertico~
