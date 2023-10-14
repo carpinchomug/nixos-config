@@ -594,6 +594,9 @@ Load a theme.
 ** ~mozc~
 #+begin_src emacs-lisp
   (use-package mozc
+    :commands (mozc-mode)
+    :custom
+    (mozc-candidate-style 'echo-area)
     :init
     (setq default-input-method "japanese-mozc")
     (global-set-key [zenkaku-hankaku] #'toggle-input-method)
