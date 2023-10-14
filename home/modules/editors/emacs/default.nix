@@ -35,6 +35,7 @@ in
       expand-region
       helpful
       hydra
+      kbd-mode
       ligature
       markdown-mode
       magit
@@ -70,6 +71,9 @@ in
     ];
 
     overrides = self: super: {
+      kbd-mode = pkgs.callPackage ./kbd-mode.nix {
+        inherit (super) trivialBuild;
+      };
       mozc = super.mozc.overrideAttrs {
         postPatch = ''
           substituteInPlace src/unix/emacs/mozc.el \

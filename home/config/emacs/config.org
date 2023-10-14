@@ -500,6 +500,12 @@ Load a theme.
            ("C-h F" . helpful-function)))
 #+end_src
 
+** ~kbd-mode~
+#+begin_src emacs-lisp
+  (use-package kbd-mode
+    :mode "\\.kbd\\'")
+#+end_src
+
 ** ~ibuffer~
 #+begin_src emacs-lisp
   (use-package ibuffer
