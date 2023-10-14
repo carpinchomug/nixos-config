@@ -587,8 +587,10 @@ Load a theme.
 #+end_src
 
 ** ~nix-ts-mode~
+Disabled until I figure out how to get indentation to work properly.
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
+    :disabled
     :mode "\\.nix\\'"
     :custom
     (nix-ts-mode-hook nix-mode-hook))
