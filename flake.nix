@@ -24,11 +24,6 @@
 
     nur.url = "github:nix-community/nur";
 
-    kmonad = {
-      url = "github:kmonad/kmonad?dir=nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
