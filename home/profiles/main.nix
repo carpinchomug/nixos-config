@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, root, ... }:
 
 let
   identityFile = "~/.ssh/gpg.pub";
@@ -60,11 +60,11 @@ in
         };
       };
 
-      # output = {
-      #   "*" = {
-      #     bg = "${builtins.toString ../../assets/wallpapers/lake-tree.png} fill";
-      #   };
-      # };
+      output = {
+        "*" = {
+          bg = "${builtins.toString (root + /assets/wallpapers/outerwilds.png)} fill";
+        };
+      };
     };
   };
 }
