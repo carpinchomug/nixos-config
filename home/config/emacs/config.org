@@ -87,25 +87,32 @@ Enable visual line based editing.
   (global-visual-line-mode)
   #+end_src
 
-  Set up fonts.
-  #+begin_src emacs-lisp
-    (defun my/setup-fonts ()
-      (set-fontset-font t
-                        'japanese-jisx0213.2004-1
-                        "Sarasa Mono J")
-      (set-fontset-font "fontset-standard"
-                        nil
-                        "Iosevka Aile")
-      (set-fontset-font "fontset-standard"
-                        'japanese-jisx0213.2004-1
-                        "Sarasa UI J")
-      (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
-      (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
-      (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
+Highlight current line.
+#+begin_src emacs-lisp
+  (global-hl-line-mode)
+  (set-face-attribute 'hl-line nil
+                      :background "#f3f3ff")
+  #+end_src
 
-    (if (daemonp)
-        (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
-      (when (display-graphic-p) (my/setup-fonts)))
+  Set up fonts.
+#+begin_src emacs-lisp
+  (defun my/setup-fonts ()
+    (set-fontset-font t
+                            'japanese-jisx0213.2004-1
+                            "Sarasa Mono J")
+          (set-fontset-font "fontset-standard"
+                            nil
+                            "Iosevka Aile")
+          (set-fontset-font "fontset-standard"
+                            'japanese-jisx0213.2004-1
+                            "Sarasa UI J")
+          (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
+          (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
+          (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
+
+        (if (daemonp)
+            (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
+          (when (display-graphic-p) (my/setup-fonts)))
 #+end_src
 
 Load a theme.
@@ -117,6 +124,25 @@ Load a theme.
                                              (bg-line-number-inactive upspecified)
                                              (bg-line-number-active unspecified)))
     (load-theme 'modus-operandi t))
+#+end_src
+
+Some mode line tweaks.
+#+begin_src emacs-lisp
+  (set-face-attribute 'mode-line nil
+                      :background 'unspecified
+                      :box 'unspecified
+                      :overline "#000000")
+  (set-face-attribute 'mode-line-inactive nil
+                      :background 'unspecified
+                      :box 'unspecified
+                      :foreground "#595959"
+                      :overline "#000000")
+#+end_src
+
+Retain original foreground colours in region.
+#+begin_src emacs-lisp
+  (set-face-attribute 'region nil
+                      :foreground 'unspecified)
 #+end_src
 
 ** Keybindings
@@ -132,7 +158,8 @@ Load a theme.
             ("+" hydra-zoom/body "Zoom")
             ("/" hydra-undo/body "Undo")
             ("q" nil))
-    :bind ("H-h" . hydra-master/body)
+    :bind (("H-h" . hydra-master/body)
+           ("C-c C-h" . hydra-master/body))
     :config
     (defhydra hydra-zoom (:color red)
       "Zoom"
@@ -371,8 +398,7 @@ Load a theme.
 ** ~dired~
 #+begin_src emacs-lisp
   (use-package dired
-    :custom
-    (dired-kill-when-opening-new-dired-buffer t))
+    :commands dired)
 #+end_src
 
 ** ~display-line-number~
@@ -594,7 +620,7 @@ Load a theme.
 ** ~mozc~
 #+begin_src emacs-lisp
   (use-package mozc
-    :commands (mozc-mode)
+    :commands mozc-mode
     :custom
     (mozc-candidate-style 'echo-area)
     :init
@@ -622,6 +648,7 @@ Disabled until I figure out how to get indentation to work properly.
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :disabled
+    :if (treesit-available-p)
     :mode "\\.nix\\'"
     :custom
     (nix-ts-mode-hook nix-mode-hook))
@@ -774,6 +801,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~rust-ts-mode~
 #+begin_src emacs-lisp
   (use-package rust-ts-mode
+    :if (treesit-available-p)
     :mode "\\.rs\\'"
     :custom
     (rust-ts-mode-hook rust-mode-hook))
@@ -841,6 +869,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~treesit-auto~
 #+begin_src emacs-lisp
   (use-package treesit-auto
+    :if (treesit-available-p)
     :custom
     (treesit-auto-install nil)
     :config
@@ -850,6 +879,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~typst-ts-mode~
 #+begin_src emacs-lisp
   (use-package typst-ts-mode
+    :if (treesit-available-p)
     :mode ("\\.typ\\'" . typst-ts-mode))
 #+end_src
 
@@ -865,7 +895,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~vundo~
 #+begin_src emacs-lisp
   (use-package vundo
-    :commands (vundo))
+    :commands vundo)
 #+end_src
 
 ** ~vertico-posframe~
