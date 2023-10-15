@@ -56,7 +56,7 @@
             tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
             @cbh a    s    d    f    g    h    j    k    l    ;    '         ret
             lsft z    x    c    v    b    n    m    ,    .    /              rsft
-            wkup lctl lmet lalt           spc            ralt prnt rctl pgdn up   pgup
+            wkup lctl lmet lalt           spc            ralt @prm rctl pgdn up   pgup
                                                                         left down rght
           )
 
@@ -72,9 +72,11 @@
           )
 
           (defalias
+            prm (multi XX (tap-hold-release 200 200 prnt rmet))
+
             ;; Needs to wrapped in multi due to a bug
             ;; https://github.com/jtroo/kanata/blob/main/docs/config.adoc#tap-hold
-            cbh (multi XX (tap-hold-release 200 200 C-\ (layer-while-held emacs-hyper)))
+            cbh (multi XX (tap-hold-press 200 200 C-\ (layer-while-held emacs-hyper)))
 
             ;; Emacs interprets "C-x @ h" as hyper.
             hh (macro C-x S-2 h h) ;; hyper-h
