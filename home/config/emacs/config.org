@@ -2,14 +2,34 @@
 #+PROPERTY: header-args :tangle (expand-file-name "emacs/init.el" (getenv "XDG_CONFIG_HOME"))
 
 * Start up
-Load ~use-package~.
+Check if emacs is run in a nix-managed environment.
 #+begin_src emacs-lisp
+  (defun nixp ()
+    "Return t if emacs is installed with nix."
+    (string-prefix-p "/nix/store/" invocation-directory))
+  #+end_src
+
+Load ~use-package~. For non-nix installation [[https://github.com/progfolio/elpaca][elpaca]] looks interesting.
+#+begin_src emacs-lisp
+  (unless (nixp)
+    (require 'package)
+
+    (if (eq system-type 'windows-nt)
+        (add-to-list 'package-archives
+                     '("melpa" . "http://melpa.org/packages/") t)
+      (add-to-list 'package-archives
+                   '("melpa" . "https://melpa.org/packages/") t))
+    (package-initialize)
+
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package)))
+
   (eval-when-compile
     (require 'use-package))
 
   (require 'bind-key)
   (require 'diminish)
-  (require 'use-package-hydra)
 #+end_src
 
 Eagerly load packages with ~use-package~ when emacs is  started as a daemon.
@@ -87,13 +107,6 @@ Enable visual line based editing.
   (global-visual-line-mode)
   #+end_src
 
-Highlight current line.
-#+begin_src emacs-lisp
-  (global-hl-line-mode)
-  (set-face-attribute 'hl-line nil
-                      :background "#f3f3ff")
-  #+end_src
-
   Set up fonts.
 #+begin_src emacs-lisp
   (defun my/setup-fonts ()
@@ -118,12 +131,22 @@ Highlight current line.
 Load a theme.
 #+begin_src emacs-lisp
   (use-package modus-themes
-    :config
-    (setq modus-themes-mixed-fonts t)
-    (setq modus-operandi-palette-overrides '((fringe unspecified)
+    :custom
+    (modus-themes-mixed-fonts t)
+    (modus-themes-common-palette-overrides '((bg-line-number-active unspecified)
                                              (bg-line-number-inactive upspecified)
-                                             (bg-line-number-active unspecified)))
+                                             (bg-mode-line-active unspecified)
+                                             (bg-mode-line-inactive unspecified)
+                                             (border-mode-line-active unspecified)
+                                             (border-mode-line-inactive unspecified)
+                                             (fringe unspecified)))
+    :config
     (load-theme 'modus-operandi t))
+
+  (use-package emacs
+    :custom-face
+    (mode-line ((t (:overline "#000000"))))
+    (mode-line-inactive ((t (:overline "#000000")))))
 #+end_src
 
 Some mode line tweaks.
@@ -145,56 +168,11 @@ Retain original foreground colours in region.
                       :foreground 'unspecified)
 #+end_src
 
-** Keybindings
-*** ~hydra~
-#+begin_src emacs-lisp
-  (use-package hydra
-    :hydra (hydra-master
-            (:color blue)
-            "Hydras"
-            ("n" hydra-navigate/body "Navigate")
-            ("o" hydra-org/body "Org")
-            ;; ("w" hydra-window/body "Window")
-            ("+" hydra-zoom/body "Zoom")
-            ("/" hydra-undo/body "Undo")
-            ("q" nil))
-    :bind (("H-h" . hydra-master/body)
-           ("C-c C-h" . hydra-master/body))
-    :config
-    (defhydra hydra-zoom (:color red)
-      "Zoom"
-      ("+" text-scale-increase)
-      ("-" text-scale-decrease)
-      ("0" (text-scale-adjust 0))
-      ("q" nil))
-
-    (defhydra hydra-undo (:color red)
-      "Undo"
-      ("u" undo)
-      ("r" undo-redo)
-      ("v" vundo :exit t)
-      ("q" nil))
-
-    (defhydra hydra-navigate (:color red)
-      "Navigate"
-      ("f" forward-char)
-      ("b" backward-char)
-      ("n" next-line)
-      ("p" previous-line)))
-#+end_src
-
 * Packages
-** ~ace-window~
-#+begin_src emacs-lisp
-  (use-package ace-window
-    :bind ("C-x o" . 'ace-window)
-    :custom
-    (aw-background nil))
-#+end_src
-
 ** ~autorevert~
 #+begin_src emacs-lisp
   (use-package autorevert
+    :ensure nil
     :config
     (global-auto-revert-mode))
 #+end_src
@@ -202,18 +180,20 @@ Retain original foreground colours in region.
 ** ~avy~
 #+begin_src emacs-lisp
   (use-package avy
-    :bind ("M-g c" . avy-goto-char))
+    :bind ("C-x j" . avy-goto-char-timer)
+    :custom
+    (avy-timeout-seconds 0.75))
 #+end_src
 
 ** ~beacon~
 #+begin_src emacs-lisp
   (use-package beacon
+    :commands (beacon-mode beacon-blink)
     :config
     (add-to-list 'beacon-dont-blink-major-modes 'dashboard-mode)
     (add-to-list 'beacon-dont-blink-major-modes 'comint-mode)
     (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode)
-    (add-to-list 'beacon-dont-blink-major-modes 'eat-mode)
-    (beacon-mode))
+    (add-to-list 'beacon-dont-blink-major-modes 'eat-mode))
 #+end_src
 
 ** ~cape~
@@ -227,7 +207,8 @@ Retain original foreground colours in region.
 ** ~cmake-mode~
 #+begin_src emacs-lisp
   (use-package cmake-mode
-    :mode "\\.cmake\\'")
+    :mode ("CMakeLists\\.txt\\'"
+           "\\.cmake\\'"))
 #+end_src
 
 ** ~consult~
@@ -351,16 +332,45 @@ Retain original foreground colours in region.
     (global-corfu-mode))
 #+end_src
 
-** ~csv~
+** ~css-mode~
+#+begin_src emacs-lisp
+  (use-package css-mode
+    :ensure nil
+    :mode "\\.css\\'"
+    :init
+    (when (treesit-language-available-p 'css)
+      (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode))))
+#+end_src
+
+** ~csv-mode~
 #+begin_src emacs-lisp
   (use-package csv-mode
     :mode (("\\.csv\\'" . csv-mode)
            ("\\.tsv\\'" . tsv-mode)))
 #+end_src
 
+** ~c-ts-mode~
+#+begin_src emacs-lisp
+  (use-package cc-mode
+    :ensure nil
+    :commands (c-ts-mode c++-ts-mode)
+    :custom
+    (c-ts-mode-hook c-mode-hook)
+    (c++-ts-mode-hook c++-mode-hook)
+    :init
+    (when (treesit-language-available-p 'c)
+      (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode)))
+    (when (treesit-language-available-p 'cpp)
+      (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))))
+#+end_src
+
 ** ~dashboard~
 #+begin_src emacs-lisp
   (use-package dashboard
+    :bind (:repeat-map
+           dashboard-line-navigation-repeat-map
+           ("n" . dashboard-next-line)
+           ("p" . dashboard-previous-line))
     :custom
     (dashboard-center-content t)
     (dashboard-set-footer nil)
@@ -371,7 +381,7 @@ Retain original foreground colours in region.
                        (projects . 5)
                        (agenda . 5)))
     :init
-    ;; Show a dashboard in emacsclient.
+    ;; Display the dashboard in new emacsclient frames.
     (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
     :config
     (dashboard-setup-startup-hook))
@@ -398,17 +408,17 @@ Retain original foreground colours in region.
 ** ~dired~
 #+begin_src emacs-lisp
   (use-package dired
+    :ensure nil
     :commands dired)
 #+end_src
 
 ** ~display-line-number~
 #+begin_src emacs-lisp
   (use-package display-line-numbers
-    :hook ((conf-mode . display-line-numbers-mode)
-           (prog-mode . display-line-numbers-mode)
-           (text-mode . display-line-numbers-mode))
+    :ensure nil
+    :commands (global-display-line-numbers-mode
+               display-line-numbers-mode)
     :custom
-    (display-line-numbers-type 'relative)
     (display-line-numbers-current-absolute t)
     (display-line-numbers-grow-only t))
 #+end_src
@@ -424,12 +434,12 @@ Retain original foreground colours in region.
 #+begin_src emacs-lisp
   (use-package eglot
     :hook ((bash-ts-mode . eglot-ensure)
-           ((c-mode c-ts-mode c++-mode c++-ts-mode) . eglot-ensure)
-           ((js-mode js-ts-mode typescript-ts-mode tsx-ts-mode) . eglot-ensure)
+           ((c-mode c++-mode) . eglot-ensure)
+           (js-base-mode . eglot-ensure)
            (nix-mode . eglot-ensure)
-           ((python-mode python-ts-mode) . eglot-ensure)
-           ((rust-mode rust-ts-mode) . eglot-ensure)
-           (typst-ts-mode . eglot-ensure))
+           (python-base-mode . eglot-ensure)
+           (rust-mode . eglot-ensure)
+           (typst-mode . eglot-ensure))
     :custom
     (eglot-autoshutdown t)
     (eglot-workspace-configuration '(:nil (:formatting (:command ["nixpkgs-fmt"]))
@@ -442,6 +452,7 @@ Retain original foreground colours in region.
 ** ~eldoc~
 #+begin_src emacs-lisp
   (use-package eldoc
+    :ensure nil
     :custom
     (eldoc-echo-area-prefer-doc-buffer t))
 #+end_src
@@ -449,6 +460,7 @@ Retain original foreground colours in region.
 ** ~elec-pair~
 #+begin_src emacs-lisp
   (use-package elec-pair
+    :ensure nil
     :hook ((conf-mode . electric-pair-mode)
            (prog-mode . electric-pair-mode)))
 #+end_src
@@ -460,7 +472,9 @@ Retain original foreground colours in region.
            ("C-;" . embark-dwim)
            ("C-h B" . embark-bindings)
            :map embark-collect-mode-map
-           ("m" . embark-select))
+           ("m" . embark-select)
+           :map help-map
+           ("C-h" . embark-prefix-help-command))
     :init
     ;; Optionally replace the key help with a completing-read interface
     (setq prefix-help-command #'embark-prefix-help-command)
@@ -479,6 +493,7 @@ Retain original foreground colours in region.
 ** ~embark-consult~
 #+begin_src emacs-lisp
   (use-package embark-consult
+    :after (embark consult)
     :init
     (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))
 #+end_src
@@ -496,6 +511,7 @@ Retain original foreground colours in region.
 ** ~epg~
 #+begin_src emacs-lisp
   (use-package epg
+    :ensure nil
     :custom
     (epg-pinentry-mode 'loopback))
 #+end_src
@@ -503,6 +519,7 @@ Retain original foreground colours in region.
 ** ~eshell~
 #+begin_src emacs-lisp
   (use-package eshell
+    :ensure nil
     :commands eshell
     :init
     (add-hook 'eshell-mode-hook (lambda () (setq-local scroll-margin 0))))
@@ -527,12 +544,14 @@ Retain original foreground colours in region.
 ** ~face-remap~
 #+begin_src emacs-lisp
   (use-package face-remap
+    :ensure nil
     :hook (org-mode . variable-pitch-mode))
 #+end_src
 
 ** ~flyspell~
 #+begin_src emacs-lisp
   (use-package flyspell
+    :ensure nil
     :commands (flyspell-mode flyspell-prog-mode)
     :config
     (unbind-key "C-." flyspell-mode-map))
@@ -549,16 +568,60 @@ Retain original foreground colours in region.
            ("C-h F" . helpful-function)))
 #+end_src
 
-** ~kbd-mode~
+** ~hl-line~
 #+begin_src emacs-lisp
-  (use-package kbd-mode
-    :mode "\\.kbd\\'")
+  (use-package hl-line
+    :ensure nil
+    :commands (global-hl-line-mode hl-line-mode)
+    :custom-face
+    (hl-line ((t (:background "#f3f3ff")))))
 #+end_src
 
 ** ~ibuffer~
 #+begin_src emacs-lisp
   (use-package ibuffer
+    :ensure nil
     :bind ("C-x C-b" . ibuffer))
+#+end_src
+
+** ~js~
+#+begin_src emacs-lisp
+  (use-package js
+    :ensure nil
+    :mode (("\\.js[mx]?\\'" . js-mode)
+           ("\\.json\\'" . js-json-mode))
+    :init
+    (when (treesit-language-available-p 'javascript)
+      (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
+    (when (treesit-language-available-p 'json)
+      (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))))
+#+end_src
+
+** ~just-mode~
+#+begin_src emacs-lisp
+  (use-package just-mode
+    :mode ("/[Jj]ustfile\\'"
+           "\\.[Jj]ust\\(file\\)?\\'"))
+#+end_src
+
+** ~kbd-mode~
+#+begin_src emacs-lisp
+  (use-package kbd-mode
+    :ensure nil
+    :mode "\\.kbd\\'")
+#+end_src
+
+** ~latex~
+#+begin_src emacs-lisp
+  (use-package latex
+    :ensure nil
+    :mode ("\\.tex\\'" . TeX-latex-mode)
+    :init
+    (setq-default TeX-engine 'luatex)
+    (setq TeX-parse-self t
+          TeX-auto-save t
+          TeX-view-program-selection '((output-pdf "PDF Tools")))
+    (setq LaTeX-electric-left-right-brace t))
 #+end_src
 
 ** ~ligature~
@@ -599,6 +662,7 @@ Retain original foreground colours in region.
 ** ~magit-extras~
 #+begin_src emacs-lisp
   (use-package magit-extras
+    :ensure magit
     :after project)
 #+end_src
 
@@ -612,6 +676,7 @@ Retain original foreground colours in region.
 ** ~midnight~
 #+begin_src emacs-lisp
   (use-package midnight
+    :ensure nil
     :config
     (add-to-list 'clean-buffer-list-kill-regexps "\\`\\*helpful ")
     (midnight-mode))
@@ -648,10 +713,12 @@ Disabled until I figure out how to get indentation to work properly.
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :disabled
-    :if (treesit-available-p)
-    :mode "\\.nix\\'"
+    :if (treesit-language-available-p 'nix)
+    :commands nix-ts-mode
     :custom
-    (nix-ts-mode-hook nix-mode-hook))
+    (nix-ts-mode-hook nix-mode-hook)
+    :init
+    (add-to-list 'major-mode-remap-alist '(nix-mode . nix-ts-mode)))
 #+end_src
 
 ** ~olivetti~
@@ -672,19 +739,15 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~org~
 #+begin_src emacs-lisp
   (use-package org
-    :hydra (hydra-org
-            (:color red)
-            "Org-mode"
-            ("n" org-next-visible-heading)
-            ("p" org-previous-visible-heading)
-            ("f" org-forward-heading-same-level)
-            ("b" org-backward-heading-same-level)
-            ("u" outline-up-heading)
-            ("<up>" org-move-subtree-up)
-            ("<down>" org-move-subtree-down))
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
-           ("C-c c" . org-capture))
+           ("C-c c" . org-capture)
+           (:repeat-map
+            org-heading-repeat-map
+            ("n" . org-next-visible-heading)
+            ("p" . org-previous-visible-heading)
+            ("f" . org-forward-heading-same-level)
+            ("b" . org-backward-heading-same-level)))
     :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
@@ -727,9 +790,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~org-modern~
 #+begin_src emacs-lisp
   (use-package org-modern
-    :hook (org-mode . org-modern-mode)
-    :init
-    (add-hook 'org-modern-mode-hook (lambda () (display-line-numbers-mode -1))))
+    :hook (org-mode . org-modern-mode))
 #+end_src
 
 ** ~org-reveal~
@@ -741,6 +802,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~paren~
 #+begin_src emacs-lisp
   (use-package paren
+    :ensure nil
     :hook ((conf-mode . show-paren-mode)
            (prog-mode . show-paren-mode)
            (text-mode . show-paren-mode))
@@ -758,6 +820,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~pixel-scroll~
 #+begin_src emacs-lisp
   (use-package pixel-scroll
+    :ensure nil
     :config
     (pixel-scroll-precision-mode))
 #+end_src
@@ -765,6 +828,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~project~
 #+begin_src emacs-lisp
   (use-package project
+    :ensure nil
     :custom
     (project-vc-extra-root-markers '(".dir-locals.el" "flake.nix")))
 #+end_src
@@ -772,7 +836,11 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~python~
 #+begin_src emacs-lisp
   (use-package python
+    :ensure nil
     :mode ("\\.py[iw]?\\'" . python-mode)
+    :init
+    (when (treesit-language-available-p 'python)
+      (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
     :custom
     (python-indent-guess-indent-offset-verbose nil))
 #+end_src
@@ -786,8 +854,97 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~recentf~
 #+begin_src emacs-lisp
   (use-package recentf
+    :ensure nil
     :config
     (recentf-mode))
+#+end_src
+
+** ~repeat~
+#+begin_src emacs-lisp
+  (use-package repeat
+    :ensure nil
+    :config
+    (defvar char-movement-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "f" #'forward-char)
+        (define-key map "b" #'backward-char)
+        map))
+    (put #'forward-char 'repeat-map 'char-movement-repeat-map)
+    (put #'backward-char 'repeat-map 'char-movement-repeat-map)
+
+    (defvar word-movement-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "f" #'forward-word)
+        (define-key map "b" #'backward-word)
+        map))
+    (put #'forward-word 'repeat-map 'word-movement-repeat-map)
+    (put #'backward-word 'repeat-map 'word-movement-repeat-map)
+
+    (defvar sexp-movement-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "f" #'forward-sexp)
+        (define-key map "b" #'backward-sexp)
+        map))
+    (put #'forward-sexp 'repeat-map 'sexp-movement-repeat-map)
+    (put #'backward-sexp 'repeat-map 'sexp-movement-repeat-map)
+
+    (defvar line-navigation-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "n" #'next-line)
+        (define-key map "p" #'previous-line)
+        map))
+    (put #'next-line 'repeat-map 'line-navigation-repeat-map)
+    (put #'previous-line 'repeat-map 'line-navigation-repeat-map)
+
+    (defvar recenter-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "l" #'recenter-top-bottom)
+        map))
+    (put #'recenter-top-bottom 'repeat-map 'recenter-repeat-map)
+
+    (defvar scroll-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "v" #'scroll-up)
+        (define-key map "V" #'scroll-down)
+      map))
+    (put #'scroll-up 'repeat-map 'scroll-repeat-map)
+    (put #'scroll-down 'repeat-map 'scroll-repeat-map)
+
+    (defvar scroll-other-window-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "v" #'scroll-other-window)
+        (define-key map "V" #'scroll-other-window-down)
+      map))
+    (put #'scroll-other-window 'repeat-map 'scroll-other-window-repeat-map)
+    (put #'scroll-other-window-down 'repeat-map 'scroll-other-window-repeat-map)
+
+    ;; Unset `undo-repeat-map' before redefining it.
+    (makunbound 'undo-repeat-map)
+    (defvar undo-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "u" #'undo)
+        (define-key map "r" #'undo-redo)
+        map))
+    (put #'undo 'repeat-map 'undo-repeat-map)
+    (put #'undo-redo 'repeat-map 'undo-repeat-map)
+
+    (defvar isearch-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "s" #'isearch-repeat-forward)
+        (define-key map "r" #'isearch-repeat-backward)
+        map))
+    (put #'isearch-repeat-forward 'repeat-map 'isearch-repeat-map)
+    (put #'isearch-repeat-backward 'repeat-map 'isearch-repeat-map)
+
+    (defvar balanced-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map "u" 'backward-up-list)
+        (define-key map "d" 'down-list)
+        map))
+    (put #'backward-up-list 'repeat-map 'balanced-repeat-map)
+    (put #'down-list 'repeat-map 'balanced-repeat-map)
+
+    (repeat-mode))
 #+end_src
 
 ** ~rust-mode~
@@ -801,8 +958,11 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~rust-ts-mode~
 #+begin_src emacs-lisp
   (use-package rust-ts-mode
-    :if (treesit-available-p)
-    :mode "\\.rs\\'"
+    :if (treesit-language-available-p 'rust)
+    :ensure nil
+    :commands rust-ts-mode
+    :init
+    (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode))
     :custom
     (rust-ts-mode-hook rust-mode-hook))
 #+end_src
@@ -810,8 +970,17 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~savehist~
 #+begin_src emacs-lisp
   (use-package savehist
+    :ensure nil
     :config
     (savehist-mode))
+#+end_src
+
+** ~snow~
+#+begin_src emacs-lisp
+  (use-package snow
+    :commands snow
+    :custom-face
+    (snow-flake ((t (:family "DejaVu Sans Mono")))))
 #+end_src
 
 ** ~spacious-padding~
@@ -852,35 +1021,51 @@ Disabled until I figure out how to get indentation to work properly.
     (tempel-path (expand-file-name "templates/*.eld" user-emacs-directory)))
 #+end_src
 
-** ~tex~
+** ~treesit~
 #+begin_src emacs-lisp
-  (use-package tex
-    :ensure auctex
-    :hook ((LaTeX-mode . LaTeX-math-mode)
-           (LaTeX-mode . TeX-fold-mode))
-    :init
-    (setq-default TeX-engine 'luatex)
-    (setq TeX-parse-self t
-          TeX-auto-save t
-          TeX-view-program-selection '((output-pdf "PDF Tools")))
-    (setq LaTeX-electric-left-right-brace t))
+  (use-package treesit
+    :ensure nil
+    :preface
+    (defun my/treesit-install-grammars ()
+      "install tree-sitter grammars"
+      (interactive)
+      (dolist (grammar
+               '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+                 (c . ("https://github.com/tree-sitter/tree-sitter-c"))
+                 (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+                 (css . ("https://github.com/tree-sitter/tree-sitter-css"))
+                 (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+                 (json . ("https://github.com/tree-sitter/tree-sitter-json"))
+                 (nix . ("https://github.com/nix-community/tree-sitter-nix"))
+                 (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+                 (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
+                 (toml . ("https://github.com/ikatyang/tree-sitter-toml"))
+                 (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+                 (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+                 (typst . ("https://github.com/uben0/tree-sitter-typst"))
+                 (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))))
+        (add-to-list 'treesit-language-source-alist grammar)
+        (unless (treesit-language-available-p (car grammar))
+          (treesit-install-language-grammar (car grammar)))))
+    :config
+    (unless (nixp)
+      (my/treesit-install-grammars)))
 #+end_src
 
-** ~treesit-auto~
+** ~typst-mode~
 #+begin_src emacs-lisp
-  (use-package treesit-auto
-    :if (treesit-available-p)
-    :custom
-    (treesit-auto-install nil)
-    :config
-    (global-treesit-auto-mode))
+  (use-package typst-mode
+    :mode "\\.typ\\'")
 #+end_src
 
 ** ~typst-ts-mode~
 #+begin_src emacs-lisp
   (use-package typst-ts-mode
-    :if (treesit-available-p)
-    :mode ("\\.typ\\'" . typst-ts-mode))
+    :if (treesit-language-available-p 'typst)
+    :ensure nil
+    :commands typst-ts-mode
+    :custom
+    (typst-ts-mode-hook typst-mode-hook))
 #+end_src
 
 ** ~vertico~
@@ -898,15 +1083,6 @@ Disabled until I figure out how to get indentation to work properly.
     :commands vundo)
 #+end_src
 
-** ~vertico-posframe~
-#+begin_src emacs-lisp
-  (use-package vertico-posframe
-    :disabled
-    :after vertico
-    :config
-    (vertico-posframe-mode))
-#+end_src
-
 ** ~web-mode~
 #+begin_src emacs-lisp
   (use-package web-mode
@@ -922,16 +1098,10 @@ Disabled until I figure out how to get indentation to work properly.
            "/\\(views\\|html\\|theme\\|templates\\)/.*\\.php\\'"))
 #+end_src
 
-** ~which-key~
-#+begin_src emacs-lisp
-  (use-package which-key
-    :config
-    (which-key-mode))
-#+end_src
-
 ** ~whitespace~
 #+begin_src emacs-lisp
   (use-package whitespace
+    :ensure nil
     :commands (whitespace-mode
                whitespace-cleanup)
     :custom
@@ -954,6 +1124,24 @@ Disabled until I figure out how to get indentation to work properly.
   (use-package whitespace-cleanup-mode
     :config
     (global-whitespace-cleanup-mode))
+#+end_src
+
+** ~yaml-mode~
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :mode "\\.ya?ml\\'")
+#+end_src
+
+** ~yaml-ts-mode~
+#+begin_src emacs-lisp
+  (use-package yaml-ts-mode
+    :if (treesit-language-available-p 'yaml)
+    :ensure nil
+    :commands yaml-ts-mode
+    :custom
+    (yaml-ts-mode-hook yaml-mode-hook)
+    :init
+    (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 #+end_src
 
 ** ~yuck-mode~

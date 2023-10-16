@@ -1,79 +1,22 @@
 { config, lib, pkgs, root, wayland, ... }:
 
 let
-  inherit (config.wayland.windowManager) hyprland sway;
-  package = if wayland then pkgs.emacs29-pgtk else pkgs.emacs29;
+  emacsPackage = pkgs.emacsWithPackagesFromUsePackage {
+    package = if wayland then pkgs.emacs29-pgtk else pkgs.emacs29;
+    config = root + /config/emacs/config.org;
+    alwaysEnsure = true;
+    alwaysTangle = true;
 
-in
-{
-  imports = [ (root + /modules/misc/fonts) ];
-
-  programs.emacs = {
-    inherit package;
-
-    enable = true;
-
-    extraPackages = epkgs: with epkgs; [
-      ace-window
-      auctex
-      avy
-      beacon
-      cape
-      cmake-mode
-      consult
-      corfu
-      csv-mode
-      dashboard
-      diff-hl
+    extraEmacsPackages = epkgs: with epkgs; [
       diminish
-      eat
-      eglot
-      embark
-      embark-consult
-      envrc
-      exec-path-from-shell
-      expand-region
-      helpful
-      hydra
-      kbd-mode
-      ligature
-      markdown-mode
-      magit
-      marginalia
-      modus-themes
-      mozc
-      nerd-icons
-      nix-mode
-      nix-ts-mode
-      olivetti
-      orderless
-      org
-      org-appear
-      org-modern
-      ox-reveal
-      pdf-tools
-      rainbow-mode
-      rust-mode
-      spacious-padding
-      tempel
-      treesit-auto
       treesit-grammars.with-all-grammars
-      typst-ts-mode
-      undo-tree
-      use-package-hydra
-      vertico
-      vertico-posframe
-      vundo
-      web-mode
-      which-key
-      whitespace-cleanup-mode
-      yuck-mode
+      use-package
+
+      (callPackage ./kbd-mode.nix { })
+      (callPackage ./typst-ts-mode.nix { })
     ];
 
-    overrides = self: super: {
-      kbd-mode = pkgs.callPackage ./kbd-mode.nix {
-        inherit (super) trivialBuild;
-      };
+    override = self: super: {
       mozc = super.mozc.overrideAttrs {
         postPatch = ''
           substituteInPlace src/unix/emacs/mozc.el \
@@ -86,11 +29,16 @@ in
             --replace '"./reveal.js"' '"file://${pkgs.reveal}/lib/node_modules/reveal.js"'
         '';
       };
-      typst-ts-mode = pkgs.callPackage ./typst-ts-mode.nix {
-        inherit (pkgs) fetchFromSourcehut;
-        inherit (super) trivialBuild;
-      };
     };
+  };
+
+in
+{
+  imports = [ (root + /modules/misc/fonts) ];
+
+  programs.emacs = {
+    enable = true;
+    package = emacsPackage;
   };
 
   services.emacs = {
