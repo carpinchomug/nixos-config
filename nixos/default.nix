@@ -46,7 +46,6 @@ in
         ./modules/boot.nix
         ./modules/desktop.nix
         ./modules/i18n.nix
-        ./modules/kanata.nix
         ./modules/networking.nix
         ./modules/pipewire.nix
         ./modules/polkit.nix
