@@ -7,9 +7,17 @@ Check if emacs is run in a nix-managed environment.
   (defun nixp ()
     "Return t if emacs is installed with nix."
     (string-prefix-p "/nix/store/" invocation-directory))
-  #+end_src
+#+end_src
 
-Load ~use-package~. For non-nix installation [[https://github.com/progfolio/elpaca][elpaca]] looks interesting.
+Make sure emacs will find the right user directory.
+#+begin_src emacs-lisp
+  (setq user-emacs-directory
+        (if (nixp)
+            (expand-file-name "emacs" (getenv "XDG_CONFIG_HOME"))
+          "~/.emacs.d"))
+#+end_src
+
+Load ~use-package~.
 #+begin_src emacs-lisp
   (unless (nixp)
     (require 'package)
@@ -32,140 +40,77 @@ Load ~use-package~. For non-nix installation [[https://github.com/progfolio/elpa
   (require 'diminish)
 #+end_src
 
-Eagerly load packages with ~use-package~ when emacs is  started as a daemon.
+Eagerly load packages with ~use-package~ if emacs is started as a daemon.
 #+begin_src emacs-lisp
   (when (daemonp)
     (setq use-package-always-demand t))
 #+end_src
 
 * General configuration
-Make sure emacs will find the right user directory set up by ~home-manager~.
 #+begin_src emacs-lisp
-  (setq user-emacs-directory (expand-file-name "emacs" (getenv "XDG_CONFIG_HOME")))
-#+end_src
-
-Store backup and auto-save files in dedicated directories under ~user-emacs-directory~.
-#+begin_src emacs-lisp
-  (let ((backup-dir (expand-file-name "backup" user-emacs-directory))
-        (auto-save-dir (expand-file-name "auto-save" user-emacs-directory)))
-    (dolist (dir (list backup-dir auto-save-dir))
-      (make-directory dir t)
-      (setq backup-directory-alist `((".*" . ,backup-dir))
-            auto-save-file-name-transforms `((".*" ,auto-save-dir t)))))
-#+end_src
-
-Write custom information ot ~custom-file~ in ~user-emacs-directory~.
-#+begin_src emacs-lisp
-  (setq custom-file (expand-file-name "custom-file.el" user-emacs-directory))
-  (load custom-file t)
-#+end_src
-
-Modify scrolling behaviour to imitate that of ~helix~.
-- ~scroll-margin~
-  Sets the number of lines that triggers scrolling whenever point gets within.
-- ~scroll-preserver-screen-position~
-  Controls whether scroll commands move point to keep its screen position unchanged.
-- ~scroll-conservatively~
-  Settings this to a large number prevents automatic recentering of point.
-#+begin_src emacs-lisp
-  (setq scroll-margin 5
-        scroll-preserve-screen-position t
-        scroll-conservatively 100)
-#+end_src
-
-Replace the "yes or no" prompt with "y or n".
-#+begin_src emacs-lisp
-  (setq use-short-answers t)
-#+end_src
-
-Set default tab width 2-column wide.
-#+begin_src emacs-lisp
-  (setq-default tab-width 2)
-#+end_src
-
-Insert spaces for indentation
-#+begin_src emacs-lisp
-  (setq-default indent-tabs-mode nil)
-#+end_src
-
-Append a newline character at the end of the file on save
-#+begin_src emacs-lisp
-  (setq require-final-newline t)
-  #+end_src
-
-Remove visual clutters.
-#+begin_src emacs-lisp
-  (tool-bar-mode -1)
-  (blink-cursor-mode -1)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (setq ring-bell-function 'ignore)
-  #+end_src
-
-Enable visual line based editing.
-#+begin_src emacs-lisp
-  (global-visual-line-mode)
-  #+end_src
-
-  Set up fonts.
-#+begin_src emacs-lisp
-  (defun my/setup-fonts ()
-    (set-fontset-font t
-                            'japanese-jisx0213.2004-1
-                            "Sarasa Mono J")
-          (set-fontset-font "fontset-standard"
-                            nil
-                            "Iosevka Aile")
-          (set-fontset-font "fontset-standard"
-                            'japanese-jisx0213.2004-1
-                            "Sarasa UI J")
-          (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
-          (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
-          (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
-
-        (if (daemonp)
-            (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
-          (when (display-graphic-p) (my/setup-fonts)))
-#+end_src
-
-Load a theme.
-#+begin_src emacs-lisp
-  (use-package modus-themes
-    :custom
-    (modus-themes-mixed-fonts t)
-    (modus-themes-common-palette-overrides '((bg-line-number-active unspecified)
-                                             (bg-line-number-inactive upspecified)
-                                             (bg-mode-line-active unspecified)
-                                             (bg-mode-line-inactive unspecified)
-                                             (border-mode-line-active unspecified)
-                                             (border-mode-line-inactive unspecified)
-                                             (fringe unspecified)))
-    :config
-    (load-theme 'modus-operandi t))
-
   (use-package emacs
+    :preface
+    (defun my/setup-fonts ()
+      (set-fontset-font t
+                        nil
+                        "Iosevka")
+      (set-fontset-font t
+                        'japanese-jisx0213.2004-1
+                        "Sarasa Mono J")
+      (set-fontset-font "fontset-standard"
+                        nil
+                        "Iosevka Aile")
+      (set-fontset-font "fontset-standard"
+                        'japanese-jisx0213.2004-1
+                        "Sarasa UI J")
+      (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
+      (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
+      (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
+    :custom
+    ;; C source code
+    (ring-bell-function 'ignore)
+    (scroll-margin 5)
+    (scroll-conservatively 100)
+
+    (use-short-answers t)
+
+    ;; files.el
+    (auto-save-file-name-transforms `((".*" ,(expand-file-name "auto-save" user-emacs-directory) t)))
+    (backup-directory-alist `((".*" . ,(expand-file-name "backup" user-emacs-directory))))
+    (require-final-newline t)
+    (scroll-preserve-screen-position t)
+
+    ;; simple.el
+    (indent-tabs-mode nil)
+
     :custom-face
-    (mode-line ((t (:overline "#000000"))))
-    (mode-line-inactive ((t (:overline "#000000")))))
-#+end_src
+    (region ((t (:foreground unspecified))))
 
-Some mode line tweaks.
-#+begin_src emacs-lisp
-  (set-face-attribute 'mode-line nil
-                      :background 'unspecified
-                      :box 'unspecified
-                      :overline "#000000")
-  (set-face-attribute 'mode-line-inactive nil
-                      :background 'unspecified
-                      :box 'unspecified
-                      :foreground "#595959"
-                      :overline "#000000")
-#+end_src
+    :config
+    ;; frame.el
+    (blink-cursor-mode -1)
 
-Retain original foreground colours in region.
-#+begin_src emacs-lisp
-  (set-face-attribute 'region nil
-                      :foreground 'unspecified)
+    ;; menu-bar.el
+    (menu-bar-mode -1)
+
+    ;; scroll-bar.el
+    (scroll-bar-mode -1)
+
+    ;; simple.el
+    (column-number-mode)
+    (global-visual-line-mode)
+    (line-number-mode)
+
+    ;; tool-bar.el
+    (tool-bar-mode -1)
+
+    (make-directory (expand-file-name "auto-save" user-emacs-directory) t)
+    (make-directory (expand-file-name "backup" user-emacs-directory) t)
+
+    (if (daemonp)
+        (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
+      (when (display-graphic-p)
+        (my/setup-fonts))))
 #+end_src
 
 * Packages
@@ -190,8 +135,8 @@ Retain original foreground colours in region.
   (use-package beacon
     :commands (beacon-mode beacon-blink)
     :config
-    (add-to-list 'beacon-dont-blink-major-modes 'dashboard-mode)
     (add-to-list 'beacon-dont-blink-major-modes 'comint-mode)
+    (add-to-list 'beacon-dont-blink-major-modes 'dashboard-mode)
     (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode)
     (add-to-list 'beacon-dont-blink-major-modes 'eat-mode))
 #+end_src
@@ -324,12 +269,13 @@ Retain original foreground colours in region.
                                   (setq corfu-auto nil)
                                   (corfu-mode)))
     :config
-    ;; Enable indentation+completion using the TAB key.
-    (setq tab-always-indent 'complete)
-    ;; Tab cycle if there are only few candidates
-    (setq completion-cycle-threshold 3)
     (advice-add #'corfu-insert :after #'corfu-send-shell)
     (global-corfu-mode))
+
+  (use-package emacs
+    :custom
+    (completion-cycle-threshold 3)
+    (tab-always-indent 'complete))
 #+end_src
 
 ** ~css-mode~
@@ -364,13 +310,23 @@ Retain original foreground colours in region.
       (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))))
 #+end_src
 
+** ~cus-edit~
+#+begin_src emacs-lisp
+  (use-package cus-edit
+    :ensure nil
+    :custom
+    (custom-file (expand-file-name "custom-file.el" user-emacs-directory))
+    :config
+    (load custom-file t))
+#+end_src
+
 ** ~dashboard~
 #+begin_src emacs-lisp
   (use-package dashboard
-    :bind (:repeat-map
-           dashboard-line-navigation-repeat-map
-           ("n" . dashboard-next-line)
-           ("p" . dashboard-previous-line))
+    :demand t
+    :bind (:repeat-map dashboard-line-navigation-repeat-map
+                       ("n" . dashboard-next-line)
+                       ("p" . dashboard-previous-line))
     :custom
     (dashboard-center-content t)
     (dashboard-set-footer nil)
@@ -388,7 +344,6 @@ Retain original foreground colours in region.
 #+end_src
 
 ** ~diff-hl~
-[[https://github.com/dgutov/diff-hl/issues/116][link]].
 #+begin_src emacs-lisp
   (use-package diff-hl
     :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
@@ -397,10 +352,23 @@ Retain original foreground colours in region.
            (conf-mode . diff-hl-margin-mode)
            (prog-mode . diff-hl-margin-mode)
            (text-mode . diff-hl-margin-mode))
+    :custom
+    ;; (diff-hl-margin-symbols-alist `((insert . ,(string #x2503)) ; U+2503
+    ;;                                 (delete . ,(string #x2503))
+    ;;                                 (change . ,(string #x2503))
+    ;;                                 (unknown . "?")
+    ;;                                 (ignored . "!")))
+    (diff-hl-margin-symbols-alist '((insert . "+")
+                                    (delete . "-")
+                                    (change . "~")
+                                    (unknown . "?")
+                                    (ignored . "!")))
     :custom-face
-    (diff-hl-change ((t (:foreground "#553d00" :background "#ffdfa9"))))
-    (diff-hl-delete ((t (:foreground "#8f1313" :background "#ffd8d5"))))
-    (diff-hl-insert ((t (:foreground "#005000" :background "#c1f2d1"))))
+    (diff-hl-change ((t (:foreground "#f5b041" :background unspecified :weight bold))))
+    (diff-hl-delete ((t (:foreground "#ec7063" :background unspecified :weight bold))))
+    (diff-hl-insert ((t (:foreground "#52be80" :background unspecified :weight bold))))
+    (diff-hl-unknown ((t (:weight bold))))
+    (diff-hl-ignored ((t (:weight bold))))
     :config
     (global-diff-hl-mode))
 #+end_src
@@ -572,7 +540,7 @@ Retain original foreground colours in region.
 #+begin_src emacs-lisp
   (use-package hl-line
     :ensure nil
-    :commands (global-hl-line-mode hl-line-mode)
+    :commands (hl-line-mode)
     :custom-face
     (hl-line ((t (:background "#f3f3ff")))))
 #+end_src
@@ -682,6 +650,28 @@ Retain original foreground colours in region.
     (midnight-mode))
 #+end_src
 
+** ~modus-themes~
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :custom
+    (modus-themes-common-palette-overrides '((bg-line-number-active unspecified)
+                                             (bg-line-number-inactive upspecified)
+                                             (bg-mode-line-active unspecified)
+                                             (bg-mode-line-inactive unspecified)
+                                             (border-mode-line-active unspecified)
+                                             (border-mode-line-inactive unspecified)
+                                             (fringe unspecified)))
+    (modus-themes-mixed-fonts t)
+    :config
+    (load-theme 'modus-operandi t))
+
+  (use-package emacs
+    :after modus-themes
+    :custom-face
+    (mode-line ((t (:overline "#000000"))))
+    (mode-line-inactive ((t (:overline "#000000")))))
+#+end_src
+
 ** ~mozc~
 #+begin_src emacs-lisp
   (use-package mozc
@@ -724,7 +714,10 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~olivetti~
 #+begin_src emacs-lisp
   (use-package olivetti
-    :commands olivetti-mode)
+    :commands olivetti-mode
+    :init
+    (add-hook 'ovlivetti-mode (lambda ()
+                                (diff-hl-mode -1))))
 #+end_src
 
 ** ~orderless~
@@ -742,12 +735,11 @@ Disabled until I figure out how to get indentation to work properly.
     :bind (("C-c l" . org-store-link)
            ("C-c a" . org-agenda)
            ("C-c c" . org-capture)
-           (:repeat-map
-            org-heading-repeat-map
-            ("n" . org-next-visible-heading)
-            ("p" . org-previous-visible-heading)
-            ("f" . org-forward-heading-same-level)
-            ("b" . org-backward-heading-same-level)))
+           (:repeat-map org-heading-repeat-map
+                        ("n" . org-next-visible-heading)
+                        ("p" . org-previous-visible-heading)
+                        ("f" . org-forward-heading-same-level)
+                        ("b" . org-backward-heading-same-level)))
     :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
@@ -790,6 +782,7 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~org-modern~
 #+begin_src emacs-lisp
   (use-package org-modern
+    :disabled
     :hook (org-mode . org-modern-mode))
 #+end_src
 
@@ -863,86 +856,36 @@ Disabled until I figure out how to get indentation to work properly.
 #+begin_src emacs-lisp
   (use-package repeat
     :ensure nil
+    :demand t
+    :bind ((:repeat-map char-movement-repeat-map
+                       ("f" . forward-char)
+                       ("b" . backward-char))
+           (:repeat-map word-movement-repeat-map
+                        ("f" . forward-word)
+                        ("b" . backward-word))
+           (:repeat-map sexp-movement-repeat-map
+                        ("f" . forward-sexp)
+                        ("b" . backward-sexp))
+           (:repeat-map line-navigation-repeat-map
+                        ("n" . next-line)
+                        ("p" . previous-line))
+           (:repeat-map recenter-repeat-map
+                        ("l" . recenter-top-bottom))
+           (:repeat-map scroll-repeat-map
+                        ("v" . scroll-up-command)
+                        ("V" . scroll-down-command))
+           (:repeat-map scroll-other-window-repeat-map
+                        ("v" . scroll-other-window)
+                        ("V" . scroll-other-window-down))
+           (:repeat-map undo-redo-repeat-map
+                        ("u" . undo)
+                        ("r" . undo-redo))
+           (:repeat-map isearch-repeat-map
+                        ("s" . isearch-repeat-forward)
+                        ("r" . isearch-repeat-backward)))
     :config
-    (defvar char-movement-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "f" #'forward-char)
-        (define-key map "b" #'backward-char)
-        map))
-    (put #'forward-char 'repeat-map 'char-movement-repeat-map)
-    (put #'backward-char 'repeat-map 'char-movement-repeat-map)
-
-    (defvar word-movement-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "f" #'forward-word)
-        (define-key map "b" #'backward-word)
-        map))
-    (put #'forward-word 'repeat-map 'word-movement-repeat-map)
-    (put #'backward-word 'repeat-map 'word-movement-repeat-map)
-
-    (defvar sexp-movement-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "f" #'forward-sexp)
-        (define-key map "b" #'backward-sexp)
-        map))
-    (put #'forward-sexp 'repeat-map 'sexp-movement-repeat-map)
-    (put #'backward-sexp 'repeat-map 'sexp-movement-repeat-map)
-
-    (defvar line-navigation-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "n" #'next-line)
-        (define-key map "p" #'previous-line)
-        map))
-    (put #'next-line 'repeat-map 'line-navigation-repeat-map)
-    (put #'previous-line 'repeat-map 'line-navigation-repeat-map)
-
-    (defvar recenter-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "l" #'recenter-top-bottom)
-        map))
-    (put #'recenter-top-bottom 'repeat-map 'recenter-repeat-map)
-
-    (defvar scroll-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "v" #'scroll-up)
-        (define-key map "V" #'scroll-down)
-      map))
-    (put #'scroll-up 'repeat-map 'scroll-repeat-map)
-    (put #'scroll-down 'repeat-map 'scroll-repeat-map)
-
-    (defvar scroll-other-window-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "v" #'scroll-other-window)
-        (define-key map "V" #'scroll-other-window-down)
-      map))
-    (put #'scroll-other-window 'repeat-map 'scroll-other-window-repeat-map)
-    (put #'scroll-other-window-down 'repeat-map 'scroll-other-window-repeat-map)
-
     ;; Unset `undo-repeat-map' before redefining it.
     (makunbound 'undo-repeat-map)
-    (defvar undo-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "u" #'undo)
-        (define-key map "r" #'undo-redo)
-        map))
-    (put #'undo 'repeat-map 'undo-repeat-map)
-    (put #'undo-redo 'repeat-map 'undo-repeat-map)
-
-    (defvar isearch-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "s" #'isearch-repeat-forward)
-        (define-key map "r" #'isearch-repeat-backward)
-        map))
-    (put #'isearch-repeat-forward 'repeat-map 'isearch-repeat-map)
-    (put #'isearch-repeat-backward 'repeat-map 'isearch-repeat-map)
-
-    (defvar balanced-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map "u" 'backward-up-list)
-        (define-key map "d" 'down-list)
-        map))
-    (put #'backward-up-list 'repeat-map 'balanced-repeat-map)
-    (put #'down-list 'repeat-map 'balanced-repeat-map)
 
     (repeat-mode))
 #+end_src
