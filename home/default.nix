@@ -9,6 +9,7 @@ let
     imports = [
       ./config
       config.flake.homeManagerModules.emacs
+      config.flake.homeManagerModules.ollama
       inputs.nix-colors.homeManagerModules.default
       inputs.nix-index-database.hmModules.nix-index
     ];

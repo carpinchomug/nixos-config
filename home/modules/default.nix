@@ -56,6 +56,8 @@ let
     programs.zoxide.enable = true;
 
     services.gnome-keyring.enable = true;
+
+    services.ollama.enable = true;
   };
 
 in

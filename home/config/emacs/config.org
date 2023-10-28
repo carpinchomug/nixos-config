@@ -433,6 +433,11 @@ Eagerly load packages with ~use-package~ if emacs is started as a daemon.
            (prog-mode . electric-pair-mode)))
 #+end_src
 
+** ~ellama~
+#+begin_src emacs-lisp
+  (use-package ellama)
+#+end_src
+
 ** ~embark~
 #+begin_src emacs-lisp
   (use-package embark

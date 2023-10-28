@@ -5,6 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
 
+    # Remove after this PR is merged:
+    # https://github.com/NixOS/nixpkgs/pull/257760
+    nixpkgs-ollama.url = "github:elohmeier/nixpkgs/ollama";
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
