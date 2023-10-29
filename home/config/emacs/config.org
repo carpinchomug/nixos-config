@@ -674,7 +674,7 @@ Eagerly load packages with ~use-package~ if emacs is started as a daemon.
                                              (fringe unspecified)))
     (modus-themes-mixed-fonts t)
     :config
-    (load-theme 'modus-operandi t))
+    (load-theme 'modus-operandi-tinted t))
 
   (use-package emacs
     :after modus-themes

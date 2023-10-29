@@ -1,3 +1,3 @@
 {
-  colorScheme = import ./modus-operandi.nix;
+  colorScheme = import ./rose-pine-dawn.nix;
 }

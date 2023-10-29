@@ -62,7 +62,7 @@ in
 
       output = {
         "*" = {
-          bg = "${builtins.toString (root + /assets/wallpapers/outerwilds.png)} fill";
+          bg = "${builtins.toString (root + /assets/wallpapers/autumn-leaves.png)} fill";
         };
       };
     };

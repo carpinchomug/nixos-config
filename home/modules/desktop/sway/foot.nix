@@ -1,5 +1,8 @@
 { config, ... }:
 
+let
+  inherit (config.colorScheme) colors;
+in
 {
   programs.foot = {
     enable = true;
@@ -15,26 +18,26 @@
 
       colors = {
         alpha = 1.0;
-        background = "ffffff";
-        foreground = "000000";
+        background = colors.background;
+        foreground = colors.foreground;
 
-        regular0 = config.colorScheme.colors.base00;
-        regular1 = config.colorScheme.colors.base01;
-        regular2 = config.colorScheme.colors.base02;
-        regular3 = config.colorScheme.colors.base03;
-        regular4 = config.colorScheme.colors.base04;
-        regular5 = config.colorScheme.colors.base05;
-        regular6 = config.colorScheme.colors.base06;
-        regular7 = config.colorScheme.colors.base07;
+        regular0 = colors.base00;
+        regular1 = colors.base01;
+        regular2 = colors.base02;
+        regular3 = colors.base03;
+        regular4 = colors.base04;
+        regular5 = colors.base05;
+        regular6 = colors.base06;
+        regular7 = colors.base07;
 
-        bright0 = config.colorScheme.colors.base08;
-        bright1 = config.colorScheme.colors.base09;
-        bright2 = config.colorScheme.colors.base0A;
-        bright3 = config.colorScheme.colors.base0B;
-        bright4 = config.colorScheme.colors.base0C;
-        bright5 = config.colorScheme.colors.base0D;
-        bright6 = config.colorScheme.colors.base0E;
-        bright7 = config.colorScheme.colors.base0F;
+        bright0 = colors.base08;
+        bright1 = colors.base09;
+        bright2 = colors.base0A;
+        bright3 = colors.base0B;
+        bright4 = colors.base0C;
+        bright5 = colors.base0D;
+        bright6 = colors.base0E;
+        bright7 = colors.base0F;
       };
     };
   };
