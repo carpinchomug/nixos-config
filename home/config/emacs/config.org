@@ -570,6 +570,12 @@ Eagerly load packages with ~use-package~ if emacs is started as a daemon.
       (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))))
 #+end_src
 
+** ~julia-mode~
+#+begin_src emacs-lisp
+  (use-package julia-mode
+    :mode "\\.jl\\'")
+#+end_src
+
 ** ~just-mode~
 #+begin_src emacs-lisp
   (use-package just-mode
@@ -748,30 +754,29 @@ Disabled until I figure out how to get indentation to work properly.
     :mode ("\\.org\\'" . org-mode)
     :custom
     (org-startup-with-inline-images t)
+    (org-image-actual-width nil)
     (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
-    (org-agenda-files '("~/org"))
+    (org-agenda-files '("~/Org"))
 
-    ;; Edit settings
     (org-auto-align-tags nil)
     (org-tags-column 0)
     (org-catch-invisible-edits 'show-and-error)
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
-
-    ;; Org styling, hide markup etc.
     (org-hide-emphasis-markers t)
     (org-pretty-entities t)
-    ;; Agenda styling
+
     (org-agenda-tags-column 0)
     (org-agenda-block-separator ?-)
     (org-agenda-time-grid '((daily today require-timed)
                             (800 1000 1200 1400 1600 1800 2000)
                             " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
-    :config
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t))))
+    ;; org-babel
+    (org-babel-load-languages '((emacs-lisp . t)
+                                (haskell . t)
+                                (julia . t)
+                                (python . t)
+                                (shell . t))))
 #+end_src
 
 ** ~org-appear~
