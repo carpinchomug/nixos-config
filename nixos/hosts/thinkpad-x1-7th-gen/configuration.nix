@@ -7,6 +7,8 @@
     ./kanata.nix
   ];
 
+  nixpkgs.config.allowUnfree = true;
+
   networking = {
     hostName = "thinkpad";
     networkmanager = {
@@ -25,6 +27,7 @@
     };
   };
 
+  hardware.enableAllFirmware = true;
   hardware.opengl.extraPackages = [ pkgs.intel-compute-runtime ];
 
   services.fstrim.enable = true;
