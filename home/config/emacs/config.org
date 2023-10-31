@@ -949,7 +949,6 @@ Disabled until I figure out how to get indentation to work properly.
 ** ~tempel~
 #+begin_src emacs-lisp
   (use-package tempel
-    :after cape
     :preface
     ;; Setup completion at point
     (defun tempel-setup-capf ()
@@ -963,15 +962,16 @@ Disabled until I figure out how to get indentation to work properly.
       (setq-local completion-at-point-functions
                   (cons #'tempel-expand
                         completion-at-point-functions)))
-    :hook ((conf-mode . tempel-setup-capf)
-           (prog-mode . tempel-setup-capf)
-           (text-mode . tempel-setup-capf))
     :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
            ("M-*" . tempel-insert))
     :custom
     ;; Require trigger prefix before template name when completing.
     ;; (tempel-trigger-prefix "<")
-    (tempel-path (expand-file-name "templates/*.eld" user-emacs-directory)))
+    (tempel-path (expand-file-name "templates/*.eld" user-emacs-directory))
+    :init
+    (add-hook 'conf-mode-hook #'tempel-setup-capf)
+    (add-hook 'prog-mode-hook #'tempel-setup-capf)
+    (add-hook 'text-mode-hook #'tempel-setup-capf))
 #+end_src
 
 ** ~treesit~
