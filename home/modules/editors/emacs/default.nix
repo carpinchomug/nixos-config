@@ -3,14 +3,12 @@
 let
   emacsPackage = pkgs.emacsWithPackagesFromUsePackage {
     package = if wayland then pkgs.emacs29-pgtk else pkgs.emacs29;
-    config = root + /config/emacs/config.org;
+    config = root + /config/emacs/init.el;
     alwaysEnsure = true;
     alwaysTangle = true;
 
     extraEmacsPackages = epkgs: with epkgs; [
-      diminish
       treesit-grammars.with-all-grammars
-      use-package
 
       (callPackage ./kbd-mode.nix { })
       (callPackage ./typst-ts-mode.nix { })
