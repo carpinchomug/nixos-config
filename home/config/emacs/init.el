@@ -50,23 +50,6 @@
 
 ;;;; General configuration
 (use-package emacs
-  :preface
-  (defun my/setup-fonts ()
-    (set-fontset-font t
-                      nil
-                      "Iosevka")
-    (set-fontset-font t
-                      'japanese-jisx0213.2004-1
-                      "Sarasa Mono J")
-    (set-fontset-font "fontset-standard"
-                      nil
-                      "Iosevka Aile")
-    (set-fontset-font "fontset-standard"
-                      'japanese-jisx0213.2004-1
-                      "Sarasa UI J")
-    (set-face-attribute 'default nil :fontset "fontset-default" :height 120)
-    (set-face-attribute 'fixed-pitch nil :fontset "fontset-default" :height 1.0)
-    (set-face-attribute 'variable-pitch nil :fontset "fontset-standard" :height 1.0))
   :custom
   ;; C source code
   (ring-bell-function 'ignore)
@@ -86,6 +69,9 @@
 
   :custom-face
   (region ((t (:foreground unspecified))))
+
+  :init
+  (add-hook 'org-mode-hook #'variable-pitch-mode)
 
   :config
   ;; frame.el
@@ -107,6 +93,29 @@
 
   (make-directory (expand-file-name "auto-save" user-emacs-directory) t)
   (make-directory (expand-file-name "backup" user-emacs-directory) t)
+
+  ;; Good guide on defining fontsets.
+  ;; https://casouri.github.io/note/2021/fontset/index.html
+  ;; Fontset for the variable pitch face.
+  (create-fontset-from-fontset-spec
+   (font-xlfd-name
+    (font-spec :family "Iosevka Aile"
+               :size 12
+               :registry "fontset-variable")))
+  (defun my/setup-fonts ()
+    (set-fontset-font t
+                      'japanese-jisx0213.2004-1
+                      "Sarasa Mono J"
+                      nil
+                      'append)
+    (set-fontset-font "fontset-variable"
+                      'japanese-jisx0213.2004-1
+                      "Sarasa UI J"
+                      nil
+                      'append)
+    (set-face-attribute 'default nil :font "Iosevka" :height 120)
+    (set-face-attribute 'fixed-pitch nil :font "Iosevka" :height 1.0)
+    (set-face-attribute 'variable-pitch nil :fontset "fontset-variable" :height 1.0))
 
   (if (daemonp)
       (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
@@ -477,17 +486,12 @@
   :config
   (exec-path-from-shell-initialize))
 
-;;;;; expand-region~
+;;;;; expand-region
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region)
   :custom
   (expand-region-smart-cursor t))
-
-;;;;; face-remap
-(use-package face-remap
-  :ensure nil
-  :hook (org-mode . variable-pitch-mode))
 
 ;;;;; flyspell
 (use-package flyspell
