@@ -25,10 +25,6 @@
   "Return t if emacs is installed with nix."
   (string-prefix-p "/nix/store/" invocation-directory))
 
-;; Let nix manage elisp packages.
-(when (nixp)
-  (setq package-enable-at-startup nil))
-
 (provide 'early-init)
 
 ;;; early-init.el ends here

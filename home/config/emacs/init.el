@@ -1,6 +1,6 @@
 ;;; init.el --- My Emacs configuration file          -*- lexical-binding: t; -*-
 
-;; This program is free software; you can redistribute it and/or modify
+;; This program is free software; you can redistribute it and/or modif
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
@@ -18,9 +18,9 @@
 ;; This is my Emacs configuration file. It's part of my larger
 ;; NixOS/home-manager configuration and, as such, both Emacs and Elisp
 ;; packages are meant to be managed by the nix package
-;; manager. However, I also work on Windows where nix is not
-;; available, so I try to keep things compatible with Emacs
-;; installations on Windows without any modifications.
+;; manager. However, I try to make it portable to environments where
+;; nix is unavailable. Especially, it should always be compatible with
+;; Emacs for Windows as my work laptop runs Windows.
 
 ;;; Code:
 
@@ -32,12 +32,18 @@
           (expand-file-name "emacs" (getenv "XDG_CONFIG_HOME"))
         "~/.emacs.d"))
 
-;; Unless managed by nix, set up Emacs's builtin package manager.
-(unless (nixp)
-  (require 'package)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/"))
-  (package-initialize))
+;; If managed by nix, set `package-archives' to nil to avoid
+;; installing packages by accident. Otherwise, let `package' install
+;; packages from MELPA as well as ELPA. According to Emacs Prelude,
+;; accessing MELPA using HTTPS from Emacs for Windows is problematic,
+;; so let it fallback to HTTP.
+(if (nixp)
+    (setq package-archives nil)
+  (if (eq system-type 'windows-nt)
+      (add-to-list 'package-archives
+                   '("melpa" . "http://melpa.org/packages/") t)
+    (add-to-list 'package-archives
+                 '("melpa" . "https://melpa.org/packages/") t)))
 
 ;; Load `use-package'.
 (eval-when-compile
@@ -94,8 +100,9 @@
   (make-directory (expand-file-name "auto-save" user-emacs-directory) t)
   (make-directory (expand-file-name "backup" user-emacs-directory) t)
 
-  ;; Good guide on defining fontsets.
+  ;; Very good guide on defining fontsets.
   ;; https://casouri.github.io/note/2021/fontset/index.html
+
   ;; Fontset for the variable pitch face.
   (create-fontset-from-fontset-spec
    (font-xlfd-name
@@ -162,7 +169,6 @@
 ;;;;; consult
 (use-package consult
   :ensure t
-  :functions consult-xref
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
          ("C-c h" . consult-history)
@@ -241,8 +247,6 @@
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
-  (require 'consult-xref)
-
   ;; For some commands and buffer sources it is useful to configure the
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
@@ -343,6 +347,13 @@
 ;;;;; diff-hl
 (use-package diff-hl
   :ensure t
+  :demand t
+  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh)
+         (dired-mode . diff-hl-dired-mode)
+         (conf-mode . diff-hl-margin-mode)
+         (prog-mode . diff-hl-margin-mode)
+         (text-mode . diff-hl-margin-mode))
   :custom
   ;; (diff-hl-margin-symbols-alist `((insert . ,(string #x2503)) ; U+2503
   ;;                                 (delete . ,(string #x2503))
@@ -360,14 +371,9 @@
   (diff-hl-insert ((t (:foreground "#52be80" :background unspecified :weight bold))))
   (diff-hl-unknown ((t (:weight bold))))
   (diff-hl-ignored ((t (:weight bold))))
-  :init
-  (add-hook 'magit-pre-refresh #'diff-hl-magit-pre-refresh)
-  (add-hook 'magit-post-refresh #'diff-hl-magit-post-refresh)
-  (add-hook 'dired-mode #'diff-hl-dired-mode)
-  (add-hook 'conf-mode #'diff-hl-margin-mode)
-  (add-hook 'prog-mode #'diff-hl-margin-mode)
-  (add-hook 'text-mode #'diff-hl-margin-mode)
   :config
+  ;; (require 'diff-hl-dired)
+  ;; (require 'diff-hl-margin)
   (global-diff-hl-mode))
 
 ;;;;; dired
@@ -657,10 +663,8 @@
   :ensure t
   :mode "\\.nix\\'")
 
-
 ;;;;; nix-ts-mode
 ;; Disabled until I figure out how to get indentation to work properly.
-
 (use-package nix-ts-mode
   :disabled
   :if (treesit-language-available-p 'nix)
@@ -758,14 +762,10 @@
 
 ;;;;; pdf-tools
 (use-package pdf-tools
+  ;; Haven't set up epdfinfo server on Windows yet
+  :if (not (eq system-type 'windows-nt))
   :ensure t
   :config
-  (dolist
-    (pkg
-     '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info pdf-isearch
-                 pdf-links pdf-misc pdf-occur pdf-outline pdf-sync
-                 pdf-util pdf-view pdf-virtual))
-    (require pkg))
   (pdf-tools-install))
 
 ;;;;; pixel-scroll
@@ -908,8 +908,9 @@
 ;;;;; treesit
 (use-package treesit
   :ensure nil
-  :preface
-  (defun my/treesit-install-grammars ()
+  :commands my/treesit-install-language-grammars
+  :init
+  (defun my/treesit-install-language-grammars ()
     "install tree-sitter grammars"
     (interactive)
     (dolist (grammar
@@ -929,16 +930,7 @@
                (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))))
       (add-to-list 'treesit-language-source-alist grammar)
       (unless (treesit-language-available-p (car grammar))
-        (treesit-install-language-grammar (car grammar)))))
-  :config
-  (unless (nixp)
-    (my/treesit-install-grammars)))
-
-;;;;; typst-mode
-(use-package typst-mode
-  :ensure t
-  :mode "\\.typ\\'")
-
+        (treesit-install-language-grammar (car grammar))))))
 
 ;;;;; typst-ts-mode
 (use-package typst-ts-mode
