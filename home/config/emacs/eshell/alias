@@ -1,6 +1,4 @@
 alias hm home-manager $*
-alias la eza -a $*
-alias ll eza -l $*
-alias lla eza -la $*
-alias ls eza $*
-alias lt eza --tree $*
+alias la ls -a $*
+alias ll ls -l $*
+alias lla ls -la $*
