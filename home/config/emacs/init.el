@@ -727,7 +727,9 @@
                               (haskell . t)
                               (julia . t)
                               (python . t)
-                              (shell . t))))
+                              (shell . t)))
+  :init
+  (add-hook 'org-mode-hook #'org-refresh-category-properties))
 
 ;;;;; org-appear
 (use-package org-appear
