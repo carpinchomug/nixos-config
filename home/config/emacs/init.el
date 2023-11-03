@@ -430,6 +430,13 @@
   :disabled
   :ensure t)
 
+;;;;; elpy
+(use-package elpy
+  :ensure t
+  :defer t
+  :init
+  (advice-add 'python-mode :before 'elpy-enable))
+
 ;;;;; embark
 (use-package embark
   :ensure t
@@ -640,7 +647,8 @@
 
 ;;;;; mozc
 (use-package mozc
-  :if (executable-find "mozc_emacs_helper")
+  :if (and (executable-find "mozc_emacs_helper")
+           (not (eq system-type 'windows-nt)))
   :ensure t
   :commands mozc-mode
   :custom
@@ -707,6 +715,7 @@
   (org-image-actual-width nil)
   (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
   (org-agenda-files '("~/Org"))
+  (org-default-notes-file "~/Org/notes.org")
 
   (org-auto-align-tags nil)
   (org-tags-column 0)
@@ -728,6 +737,16 @@
                               (julia . t)
                               (python . t)
                               (shell . t)))
+
+  ;; Org-capture templates
+  ;; Should I keep only a couple of simple templates and let `tempel'
+  ;; handle logic?
+  (org-capture-templates '(("t" "TODO Task Entry" entry (file "~/Org/tasks.org")
+                            "* TODO %?"
+                            :empty-lines 1)
+                           ("a" "Appointment/Meeting" entry (file "~/Org/diary.org")
+                            "* %?\n%^{Scheduled for}T"
+                            :empty-lines 1)))
   :init
   (add-hook 'org-mode-hook #'org-refresh-category-properties))
 
@@ -751,6 +770,12 @@
   :ensure t
   :after org)
 
+;;;;; outline
+(use-package outline
+  :ensure nil
+  :commands outline-minor-mode
+  :custom
+  (outline-minor-mode-cycle t))
 
 ;;;;; paren
 (use-package paren
@@ -862,7 +887,6 @@
   :config
   (savehist-mode))
 
-
 ;;;;; snow
 (use-package snow
   :ensure t
@@ -932,6 +956,24 @@
       (add-to-list 'treesit-language-source-alist grammar)
       (unless (treesit-language-available-p (car grammar))
         (treesit-install-language-grammar (car grammar))))))
+
+;;;;; tr-ime
+(use-package tr-ime
+  :if (eq system-type 'windows-nt)
+  :ensure t
+  :init
+  (setq default-input-method "W32-IME")
+  :config
+  (tr-ime-standard-install)
+  (w32-ime-initialize)
+  (wrap-function-to-control-ime 'universal-argument t nil)
+  (wrap-function-to-control-ime 'read-string nil nil)
+  (wrap-function-to-control-ime 'read-char nil nil)
+  (wrap-function-to-control-ime 'read-from-minibuffer nil nil)
+  (wrap-function-to-control-ime 'y-or-n-p nil nil)
+  (wrap-function-to-control-ime 'yes-or-no-p nil nil)
+  (wrap-function-to-control-ime 'map-y-or-n-p nil nil)
+  (wrap-function-to-control-ime 'register-read-with-preview nil nil))
 
 ;;;;; typst-ts-mode
 (use-package typst-ts-mode
