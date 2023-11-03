@@ -617,7 +617,6 @@
   (midnight-mode))
 
 ;;;;; modus-themes
-
 (use-package modus-themes
   :ensure t
   :custom
@@ -630,7 +629,7 @@
                                            (fringe unspecified)))
   (modus-themes-mixed-fonts t)
   :config
-  (load-theme 'modus-operandi-tinted t))
+  (load-theme 'modus-operandi t))
 
 (use-package emacs
   :ensure t
