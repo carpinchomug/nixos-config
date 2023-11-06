@@ -405,6 +405,7 @@
   :ensure nil
   :hook ((bash-ts-mode . eglot-ensure)
          ((c-mode c++-mode) . eglot-ensure)
+         (haskell-mode . eglot-ensure)
          (js-base-mode . eglot-ensure)
          (nix-mode . eglot-ensure)
          (python-base-mode . eglot-ensure)
@@ -517,6 +518,15 @@
   :commands (flyspell-mode flyspell-prog-mode)
   :config
   (unbind-key "C-." flyspell-mode-map))
+
+;;;;; haskell-mode
+(use-package haskell-mode
+  :ensure t
+  :mode (("\\.[gh]s\\'" . haskell-mode)
+         ("\\.hsig\\'" . haskell-mode)
+         ("\\.l[gh]s\\'" . haskell-literate-mode)
+         ("\\.hsc\\'" . haskell-mode))
+  :interpreter ("runghc" "runhaskell"))
 
 ;;;;; helpful
 (use-package helpful
