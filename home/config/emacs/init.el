@@ -697,6 +697,11 @@
   :init
   (add-to-list 'major-mode-remap-alist '(nix-mode . nix-ts-mode)))
 
+;;;;; nov
+(use-package nov
+  :ensure t
+  :mode ("\\.epub\\'" . nov-mode))
+
 ;;;;; olivetti
 (use-package olivetti
   :ensure t
