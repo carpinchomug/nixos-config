@@ -778,6 +778,16 @@
   :ensure t
   :after org)
 
+;;;;; org-roam
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory (if (eq system-type 'windows-nt)
+                          (expand-file-name "Roam" (getenv "OneDrive"))
+                        "~/Roam"))
+  :config
+  (org-roam-db-autosync-mode))
+
 ;;;;; outline
 (use-package outline
   :ensure nil
