@@ -367,9 +367,9 @@
   ;;                                 (ignored . "!")))
   (diff-hl-margin-symbols-alist '((insert . "+")
                                   (delete . "-")
-                                  (change . "~")
+                                  (change . "!")
                                   (unknown . "?")
-                                  (ignored . "!")))
+                                  (ignored . "i")))
   :custom-face
   (diff-hl-change ((t (:foreground "#f5b041" :background unspecified :weight bold))))
   (diff-hl-delete ((t (:foreground "#ec7063" :background unspecified :weight bold))))
