@@ -77,6 +77,10 @@
   (region ((t (:foreground unspecified))))
 
   :init
+  ;; C source code
+  (when (eq system-type 'windows-nt)
+    (setq default-directory "~"))
+
   (add-hook 'org-mode-hook #'variable-pitch-mode)
 
   :config
