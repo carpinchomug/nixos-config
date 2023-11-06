@@ -719,8 +719,11 @@
   (org-startup-with-inline-images t)
   (org-image-actual-width nil)
   (org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
-  (org-agenda-files '("~/Org"))
-  (org-default-notes-file "~/Org/notes.org")
+  (org-directory (if (eq system-type 'windows-nt)
+                     (expand-file-name "Org" (getenv "OneDrive"))
+                   "~/Org"))
+  (org-agenda-files (list org-directory))
+  (org-default-notes-file (expand-file-name "Org/notes.org" org-directory))
 
   (org-auto-align-tags nil)
   (org-tags-column 0)
