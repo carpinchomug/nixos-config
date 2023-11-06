@@ -749,10 +749,10 @@
   ;; Org-capture templates
   ;; Should I keep only a couple of simple templates and let `tempel'
   ;; handle logic?
-  (org-capture-templates `(("t" "TODO Task Entry" entry (file ,(expand-file-name "Org/tasks.org" org-directory))
+  (org-capture-templates `(("t" "TODO Task Entry" entry (file ,(expand-file-name "tasks.org" org-directory))
                             "* TODO %?"
                             :empty-lines 1)
-                           ("a" "Appointment/Meeting" entry (file ,(expand-file-name "Org/diary.org" org-directory))
+                           ("a" "Appointment/Meeting" entry (file ,(expand-file-name "diary.org" org-directory))
                             "* %?\n%^{Scheduled for}T"
                             :empty-lines 1)))
   :init
