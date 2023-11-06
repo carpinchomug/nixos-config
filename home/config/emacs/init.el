@@ -717,7 +717,7 @@
   :custom
   (org-startup-with-inline-images t)
   (org-image-actual-width nil)
-  (org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+  (org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
   (org-agenda-files '("~/Org"))
   (org-default-notes-file "~/Org/notes.org")
 
