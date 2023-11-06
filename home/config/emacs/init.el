@@ -61,6 +61,7 @@
   (ring-bell-function 'ignore)
   (scroll-margin 5)
   (scroll-conservatively 100)
+  (system-time-locale "C")
 
   (use-short-answers t)
 
