@@ -14,11 +14,13 @@ let
     home.packages = with pkgs; [
       bat
       bottom
+      cabal-install
       conda
       exercism
       fd
       ffmpeg
       gdb
+      ghc
       hunspell
       hunspellDicts.en-us
       hunspellDicts.en-gb-ise
