@@ -728,7 +728,9 @@
                       ("n" . org-next-visible-heading)
                       ("p" . org-previous-visible-heading)
                       ("f" . org-forward-heading-same-level)
-                      ("b" . org-backward-heading-same-level)))
+                      ("b" . org-backward-heading-same-level))
+         (:repeat-map org-todo-repeat-map
+                      ("t" . org-todo)))
   :mode ("\\.org\\'" . org-mode)
   :custom
   (org-startup-with-inline-images t)
